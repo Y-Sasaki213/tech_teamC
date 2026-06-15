@@ -21,7 +21,7 @@
 ## セットアップ
  
 ```bash
-git clone https://github.com/Hdkouta/Tech_Team_dev.git
+git clone https://github.com/Y-Sasaki213/tech_teamC.git
 cd Tech_Team_dev
 ```
  
