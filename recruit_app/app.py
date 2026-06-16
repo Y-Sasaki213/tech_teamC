@@ -333,6 +333,7 @@ def create_candidate():
 
     return redirect(url_for("index"))
 
+#コメント
 
 # =========================
 # 詳細画面 Read
