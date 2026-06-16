@@ -1,157 +1,24 @@
 from flask import Flask, render_template, request, redirect, url_for
-import sqlite3
-from datetime import datetime, timedelta
+
+from db import get_db_connection, init_db
+from alerts import get_candidate_alerts
+
 
 app = Flask(__name__)
-DB_NAME = "recruit.db"
+
 
 # =========================
-# DB接続用の関数
+# 一覧画面 Read + 検索
 # =========================
-def get_db_connection():
-    """
-    SQLiteに接続するための関数。
-    row_factoryを設定すると、row["name"] のようにカラム名で値を取得できる。
-    """
-    conn = sqlite3.connect(DB_NAME)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-# =========================
-# 日付変換用
-# =========================
-def parse_date(date_text):
-    """
-    DBから取得した日付文字列を datetime 型に変換する関数。
-
-    対応する形式：
-    - 2026-06-15
-    - 2026-06-15 10:30:00
-
-    空文字やNoneの場合は None を返す。
-    """
-    if not date_text:
-        return None
-
-    # SQLiteのCURRENT_TIMESTAMP形式
-    try:
-        return datetime.strptime(date_text, "%Y-%m-%d %H:%M:%S")
-    except ValueError:
-        pass
-
-    # input type="date" の形式
-    try:
-        return datetime.strptime(date_text, "%Y-%m-%d")
-    except ValueError:
-        return None
-
-
-def is_over_7_days(date_text):
-    """
-    指定された日付から7日以上経過しているか判定する。
-    """
-    target_date = parse_date(date_text)
-
-    if target_date is None:
-        return False
-
-    now = datetime.now()
-
-    return now - target_date >= timedelta(days=7)
-
-def days_since(date_text):
-    target_date = parse_date(date_text)
-
-    if target_date is None:
-        return None
-
-    now = datetime.now()
-    return (now - target_date).days
-
-# =========================
-# アラート判定ロジック
-# =========================
-def get_candidate_alerts(candidate):
-
-    alerts = []
-
-    waiting_statuses = [
-        "学生返答待ち",
-        "面接官の返答待ち",
-        "学生待ち",
-        "担当者待ち",
-        "面接官待ち"
-    ]
-
-    contact_status = candidate["contact_status"]
-
-    # -------------------------
-    # パターンA：ステップ遅延
-    # -------------------------
-    if contact_status in waiting_statuses:
-
-        # 一次 → 二次
-        if (
-            candidate["first_interview_date"]
-            and is_over_7_days(candidate["first_interview_date"])
-            and not candidate["second_interview_date"]
-        ):
-            days = days_since(candidate["first_interview_date"])
-            alerts.append(
-                f"一次面接から{days}日経過していますが、二次面接日が未入力です。"
-            )
-
-        # 二次 → 最終
-        if (
-            candidate["second_interview_date"]
-            and is_over_7_days(candidate["second_interview_date"])
-            and not candidate["final_interview"]
-        ):
-            days = days_since(candidate["second_interview_date"])
-            alerts.append(
-                f"二次面接から{days}日経過していますが、最終面接日が未入力です。"
-            )
-
-    # -------------------------
-    # パターンB：単純経過
-    # -------------------------
-    date_fields = [
-        ("一次面接日", candidate["first_interview_date"]),
-        ("二次面接日", candidate["second_interview_date"]),
-        ("最終面接日", candidate["final_interview"]),
-        ("ピザパ予定日", candidate["pizza_party_plan"]),
-        ("内定締切日", candidate["offer_deadline"]),
-    ]
-
-    for label, date_value in date_fields:
-        if date_value and is_over_7_days(date_value):
-            days = days_since(date_value)
-            alerts.append(f"{label}から{days}日経過しています。")
-
-    # -------------------------
-    # 更新日ベース
-    # -------------------------
-    closed_statuses = ["お見送り", "内定承諾", "辞退"]
-
-    if contact_status not in closed_statuses:
-        if candidate["updated_at"] and is_over_7_days(candidate["updated_at"]):
-            days = days_since(candidate["updated_at"])
-            alerts.append(
-                f"最終更新から{days}日経過しています。対応状況を確認してください。"
-            )
-
-    return alerts
-
 @app.route("/")
 def index():
-
-    # 検索条件
+    # 検索条件をGETパラメータから取得
     search_name = request.args.get("name", "")
     search_owner = request.args.get("owner", "")
 
     conn = get_db_connection()
 
-    # SQL
+    # ベースSQL
     sql = """
         SELECT
             c.id,
@@ -173,26 +40,28 @@ def index():
 
     params = []
 
+    # 採用者氏名で部分一致検索
     if search_name:
         sql += " AND c.name LIKE ?"
         params.append(f"%{search_name}%")
 
+    # 担当者名で部分一致検索
     if search_owner:
         sql += " AND c.owner LIKE ?"
         params.append(f"%{search_owner}%")
 
+    # 待ち状態の候補者を上に出しつつ、更新日が新しい順に並べる
     sql += """
-ORDER BY
-    (c.contact_status IN (
-        '学生返答待ち',
-        '面接官の返答待ち',
-        '学生待ち',
-        '担当者待ち',
-        '面接官待ち'
-    )) DESC,
-    c.updated_at DESC
-"""
-
+        ORDER BY
+            (c.contact_status IN (
+                '学生返答待ち',
+                '面接官の返答待ち',
+                '学生待ち',
+                '担当者待ち',
+                '面接官待ち'
+            )) DESC,
+            c.updated_at DESC
+    """
 
     candidates = conn.execute(sql, params).fetchall()
     conn.close()
@@ -202,6 +71,7 @@ ORDER BY
     for candidate in candidates:
         candidate_dict = dict(candidate)
 
+        # 候補者ごとのアラートを取得
         alerts = get_candidate_alerts(candidate)
 
         candidate_dict["alerts"] = alerts
@@ -210,11 +80,11 @@ ORDER BY
 
         candidate_list.append(candidate_dict)
 
+    # アラートありの候補者を一番上に表示する
     candidate_list.sort(
-      key=lambda x: (x["has_alert"], x["updated_at"]),
-      reverse=True
-)
-
+        key=lambda x: (x["has_alert"], x["updated_at"]),
+        reverse=True
+    )
 
     return render_template(
         "index.html",
@@ -222,6 +92,8 @@ ORDER BY
         search_name=search_name,
         search_owner=search_owner
     )
+
+
 # =========================
 # 新規登録画面
 # =========================
@@ -266,6 +138,7 @@ def create_candidate():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # candidatesテーブルに基本情報を登録
     cursor.execute("""
         INSERT INTO candidates (
             name,
@@ -277,8 +150,10 @@ def create_candidate():
         VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     """, (name, owner, contact_status))
 
+    # 直前に登録した候補者IDを取得
     candidate_id = cursor.lastrowid
 
+    # candidate_progressテーブルに採用フロー情報を登録
     cursor.execute("""
         INSERT INTO candidate_progress (
             candidate_id,
@@ -437,6 +312,7 @@ def update_candidate(id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # candidatesテーブルを更新
     cursor.execute("""
         UPDATE candidates
         SET
@@ -447,6 +323,7 @@ def update_candidate(id):
         WHERE id = ?
     """, (name, owner, contact_status, id))
 
+    # candidate_progressテーブルを更新
     cursor.execute("""
         UPDATE candidate_progress
         SET
@@ -515,30 +392,12 @@ def delete_candidate(id):
 
     return redirect(url_for("index"))
 
-# =========================
-# DB初期化用
-# =========================
-def init_db():
-    """
-    schema.sqlを読み込んでDBテーブルを作成する。
-    注意：
-    DROP TABLE がある場合、実行すると既存データは消える。
-    """
-    conn = get_db_connection()
-
-    with open("schema.sql", "r", encoding="utf-8") as f:
-        conn.executescript(f.read())
-
-    conn.commit()
-    conn.close()
-
-
-
 
 # =========================
 # アプリ起動
 # =========================
 if __name__ == "__main__":
-    app.run(debug=True)
-    # 初回DB作成時だけ使う
+    # 初回DB作成時だけ使う場合は、下のコメントを外す
     # init_db()
+
+    app.run(debug=True)
