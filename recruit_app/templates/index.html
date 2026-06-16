@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-title-area">
+  <h2>候補者一覧</h2>
+  <a class="btn primary" href="{{ url_for('new_candidate') }}">＋ 新規登録</a>
+</div>
+
+<form method="GET" action="{{ url_for('index') }}" class="search-form">
+  <input type="text" name="name" placeholder="氏名で検索" value="{{ search_name }}">
+  <input type="text" name="owner" placeholder="担当者で検索" value="{{ search_owner }}">
+  <button type="submit" class="btn small">検索</button>
+</form>
+
+{% if candidates|length == 0 %}
+<p>まだ候補者が登録されていません。</p>
+{% else %}
+
+<table class="candidate-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>氏名</th>
+      <th>担当</th>
+      <th>連絡ステータス</th>
+      <th>最終更新日</th>
+      <th>アラート</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for candidate in candidates %}
+    <tr class="{% if candidate.has_alert %}alert-row{% endif %}">
+      <td>{{ candidate.id }}</td>
+      <td>{{ candidate.name }}</td>
+      <td>{{ candidate.owner }}</td>
+      <td>
+        <span class="status-badge">
+          {{ candidate.contact_status }}
+        </span>
+      </td>
+      <td>{{ candidate.updated_at }}</td>
+      <td>
+        {% if candidate.has_alert %}
+        <span class="alert-badge">要対応（{{ candidate.alert_count }}）</span>
+
+        <ul class="alert-list">
+          {% for alert in candidate.alerts %}
+          <li>{{ alert }}</li>
+          {% endfor %}
+        </ul>
+
+        {% else %}
+        <span class="safe-badge">OK</span>
+        {% endif %}
+      </td>
+      <td>
+        <a class="btn small" href="{{ url_for('detail_candidate', id=candidate.id) }}">詳細</a>
+        <a class="btn small" href="{{ url_for('edit_candidate', id=candidate.id) }}">編集</a>
+
+        <form class="inline-form" action="{{ url_for('delete_candidate', id=candidate.id) }}" method="POST">
+          <button class="btn small danger" type="submit" onclick="return confirmDelete();">
+            削除
+          </button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endif %}
+
+{% endblock %}
