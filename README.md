@@ -1,6 +1,6 @@
 # tech_teamC
-anaai
-mio
+anaai　ワロタ
+mio　あほ
 ## 概要
 チーム開発研修用のプロジェクト
  
