@@ -1,5 +1,5 @@
 # tech_teamC
-anaai
+anaai ワロタ
 ## 概要
 チーム開発研修用のプロジェクト
  
