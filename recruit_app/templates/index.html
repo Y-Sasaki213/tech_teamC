@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
-{% block content %}
+<!--{% block content %}-->
+
+{% block page_css %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
 
 <div class="page-title-area">
   <h2>候補者一覧</h2>

@@ -1,0 +1,60 @@
+/* ===== 一覧ページ ===== */
+
+.page-title-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.candidate-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.candidate-table th,
+.candidate-table td {
+  padding: 14px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.candidate-table th {
+  background-color: #f3f4f6;
+}
+
+.alert-row {
+  background-color: #fff1f2;
+}
+
+/* ステータス表示 */
+.status-badge {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.alert-badge {
+  background-color: #dc2626;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.safe-badge {
+  background-color: #16a34a;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: bold;
+}
