@@ -147,9 +147,10 @@ def create_candidate():
             contact_status,
             created_at,
             updated_at
+            last_updated_field
         )
         VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    """, (name, owner, contact_status))
+    """, (name, owner, contact_status, "新規登録"))
 
     # 直前に登録した候補者IDを取得
     candidate_id = cursor.lastrowid
@@ -211,7 +212,7 @@ def create_candidate():
 
 
 # =========================
-# 詳細画面 Read
+# 詳細画面 Read？
 # =========================
 @app.route("/candidates/<int:id>")
 def detail_candidate(id):
@@ -225,6 +226,7 @@ def detail_candidate(id):
             c.contact_status,
             c.created_at,
             c.updated_at,
+            c.last_updated_field,
             p.*
         FROM candidates c
         JOIN candidate_progress p
@@ -262,6 +264,7 @@ def edit_candidate(id):
             c.contact_status,
             c.created_at,
             c.updated_at,
+            c.last_updated_field,
             p.*
         FROM candidates c
         JOIN candidate_progress p
@@ -313,35 +316,47 @@ def update_candidate(id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    last_updated_field = "更新"
-    if casual_event_staff:
+    # 更新前のデータを取得
+    old_data = conn.execute("""
+    SELECT *
+    FROM candidate_progress
+    WHERE candidate_id = ?
+""", (id,)).fetchone()
+
+
+    last_updated_field = "変更なし"
+
+    #if casual_event_staff:       #入力されているだけで更新扱い
+        #last_updated_field = "カジュアル面談"
+
+    if old_data["casual_event_staff"] != casual_event_staff:
         last_updated_field = "カジュアル面談"
 
-    elif document_screening:
+    elif old_data["document_screening"] != document_screening:
         last_updated_field = "書類選考"
 
-    elif first_interview_date:
+    elif old_data["first_interview_date"] != first_interview_date:
         last_updated_field = "一次面接"
 
-    elif first_meeting:
+    elif old_data["first_meeting"] != first_meeting:
         last_updated_field = "座談会"
 
-    elif second_interview_date:
+    elif old_data["second_interview_date"] != second_interview_date:
         last_updated_field = "二次面接"
 
-    elif transcript:
+    elif old_data["transcript"] != transcript:
         last_updated_field = "成績証明"
 
-    elif final_interview:
+    elif old_data["final_interview"] != final_interview:
         last_updated_field = "最終面接"
 
-    elif pizza_party_join:
+    elif old_data["pizza_party_join"] != pizza_party_join:
         last_updated_field = "ピザパ参加"
 
-    elif acceptance_estimate:
+    elif old_data["acceptance_estimate"] != acceptance_estimate:
         last_updated_field = "承諾目安"
 
-    elif offer_deadline:
+    elif old_data["offer_deadline"] != offer_deadline:
         last_updated_field = "内定〆切"
 
     # candidatesテーブルを更新
@@ -351,9 +366,10 @@ def update_candidate(id):
             name = ?,
             owner = ?,
             contact_status = ?,
-            updated_at = CURRENT_TIMESTAMP
+            updated_at = CURRENT_TIMESTAMP,
+            last_updated_field = ?
         WHERE id = ?
-    """, (name, owner, contact_status, id))
+    """, (name, owner, contact_status, last_updated_field, id))
 
     # candidate_progressテーブルを更新
     cursor.execute("""
