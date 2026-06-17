@@ -27,6 +27,7 @@ def index():
             c.contact_status,
             c.created_at,
             c.updated_at,
+            c.last_updated_field,
             p.first_interview_date,
             p.second_interview_date,
             p.final_interview,
@@ -312,6 +313,38 @@ def update_candidate(id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    last_updated_field = "更新"
+    if casual_event_staff:
+        last_updated_field = "カジュアル面談"
+
+    elif document_screening:
+        last_updated_field = "書類選考"
+
+    elif first_interview_date:
+        last_updated_field = "一次面接"
+
+    elif first_meeting:
+        last_updated_field = "座談会"
+
+    elif second_interview_date:
+        last_updated_field = "二次面接"
+
+    elif transcript:
+        last_updated_field = "成績証明"
+
+    elif final_interview:
+        last_updated_field = "最終面接"
+
+    elif pizza_party_join:
+        last_updated_field = "ピザパ参加"
+
+    elif acceptance_estimate:
+        last_updated_field = "承諾目安"
+
+    elif offer_deadline:
+        last_updated_field = "内定〆切"
+
+
     # candidatesテーブルを更新
     cursor.execute("""
         UPDATE candidates
@@ -319,9 +352,10 @@ def update_candidate(id):
             name = ?,
             owner = ?,
             contact_status = ?,
-            updated_at = CURRENT_TIMESTAMP
+            updated_at = CURRENT_TIMESTAMP,
+            last_updated_field = ?
         WHERE id = ?
-    """, (name, owner, contact_status, id))
+    """, (name, owner, contact_status, last_updated_field, id))
 
     # candidate_progressテーブルを更新
     cursor.execute("""
@@ -372,9 +406,15 @@ def update_candidate(id):
         id
     ))
 
+    
+    cursor.execute("""
+                    UPDATE candidates
+                    SET updated_at = CURRENT_TIMESTAMP
+                    WHERE id = ?
+                    """, (id,))
+
     conn.commit()
     conn.close()
-
     return redirect(url_for("detail_candidate", id=id))
 
 
@@ -400,4 +440,10 @@ if __name__ == "__main__":
     # 初回DB作成時だけ使う場合は、下のコメントを外す
     # init_db()
 
-    app.run(debug=True)
+ conn = get_db_connection()
+
+
+conn.commit()
+conn.close()
+
+app.run(debug=True)
