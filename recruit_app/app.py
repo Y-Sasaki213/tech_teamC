@@ -27,6 +27,7 @@ def index():
             c.contact_status,
             c.created_at,
             c.updated_at,
+            c.last_updated_field,
             p.first_interview_date,
             p.second_interview_date,
             p.final_interview,
@@ -423,6 +424,15 @@ def delete_candidate(id):
 
     return redirect(url_for("index"))
 
+# ============
+# 使い方ページ
+# ============
+
+@app.route("/usage")
+def usage_page():
+    return render_template("usage.html")
+
+
 
 # =========================
 # アプリ起動
@@ -431,4 +441,8 @@ if __name__ == "__main__":
     # 初回DB作成時だけ使う場合は、下のコメントを外す
     # init_db()
 
-    app.run(debug=True)
+  conn = get_db_connection()
+
+
+
+  app.run(debug=True)
