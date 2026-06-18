@@ -2,9 +2,9 @@ function confirmDelete() {
   return confirm("本当に削除しますか？");
 }
 
-function confirmDelete() {
-  return confirm("本当に削除しますか？");
-}
+//function confirmDelete() {
+//return confirm("本当に削除しますか？");
+//}
 
 document.addEventListener("DOMContentLoaded", function () {
   const container = document.getElementById("popup-alert-container");
