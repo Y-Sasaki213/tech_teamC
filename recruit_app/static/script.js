@@ -6,6 +6,7 @@ function confirmDelete() {
 //return confirm("本当に削除しますか？");
 //}
 
+
 document.addEventListener("DOMContentLoaded", function () {
   const container = document.getElementById("popup-alert-container");
 
@@ -14,15 +15,36 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  // 以前閉じた通知は表示しない
-  document.querySelectorAll(".popup-alert").forEach(function (alertEl) {
-    const alertId = alertEl.dataset.alertId;
-    const dismissed = localStorage.getItem("dismissed_" + alertId);
+  // クリック処理（イベント委譲）
+  container.addEventListener("click", function (event) {
+    const closeBtn = event.target.closest(".popup-close-btn");
 
-    if (dismissed === "true") {
-      alertEl.remove();
+    // × ボタンが押された場合
+    if (closeBtn) {
+      event.stopPropagation();
+
+      const popup = closeBtn.closest(".popup-alert");
+      if (!popup) {
+        return;
+      }
+
+      // localStorage には保存しない
+      // その場だけ消す
+      popup.remove();
+      return;
+    }
+
+    // 通知本体が押された場合
+    const popup = event.target.closest(".popup-alert");
+    if (popup) {
+      const detailUrl = popup.dataset.detailUrl;
+      if (detailUrl) {
+        window.location.href = detailUrl;
+      }
     }
   });
+});
+
 
   // クリック処理（イベント委譲）
   container.addEventListener("click", function (event) {
@@ -52,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
-});
+
 
 //その他入力欄　new.html
 document.addEventListener("DOMContentLoaded", function () {
