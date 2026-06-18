@@ -165,35 +165,35 @@ def get_candidate_alerts(candidate):
 # =========================
 # 右下ポップアップ通知用
 # =========================
-def get_latest_action(candidate):
-    """
-    候補者の最終アクション日を返す。
-    入力済みの日付項目のうち、一番新しいものを採用する。
-    """
-    action_fields = [
-        ("初回接点日", candidate.get("first_contact_date")),
-        ("一次面接日", candidate.get("first_interview_date")),
-        ("二次面接日", candidate.get("second_interview_date")),
-        ("最終面接日", candidate.get("final_interview")),
-        ("ピザパ予定日", candidate.get("pizza_party_plan")),
-        ("内定締切日", candidate.get("offer_deadline")),
-        ("最終更新日", candidate.get("updated_at")),
-    ]
+# def get_latest_action(candidate):
+#     """
+#     候補者の最終アクション日を返す。
+#     入力済みの日付項目のうち、一番新しいものを採用する。
+#     """
+#     action_fields = [
+#         ("初回接点日", candidate.get("first_contact_date")),
+#         ("一次面接日", candidate.get("first_interview_date")),
+#         ("二次面接日", candidate.get("second_interview_date")),
+#         ("最終面接日", candidate.get("final_interview")),
+#         ("ピザパ予定日", candidate.get("pizza_party_plan")),
+#         ("内定締切日", candidate.get("offer_deadline")),
+#         ("最終更新日", candidate.get("updated_at")),
+#     ]
 
-    valid_actions = []
+#     valid_actions = []
 
-    for label, value in action_fields:
-        parsed = parse_date(value)
-        if parsed:
-            valid_actions.append({
-                "label": label,
-                "date": parsed
-            })
+#     for label, value in action_fields:
+#         parsed = parse_date(value)
+#         if parsed:
+#             valid_actions.append({
+#                 "label": label,
+#                 "date": parsed
+#             })
 
-    if not valid_actions:
-        return None
+#     if not valid_actions:
+#         return None
 
-    return max(valid_actions, key=lambda x: x["date"])
+#     return max(valid_actions, key=lambda x: x["date"])
 
 
 
