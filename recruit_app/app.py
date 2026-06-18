@@ -47,17 +47,19 @@ def index():
         sql += " AND c.owner LIKE ?"
         params.append(f"%{search_owner}%")
 
+# 待ち状態の候補者を上に出しつつ、担当者名順に並べる
     sql += """
-        ORDER BY
-            (c.contact_status IN (
-                '学生返答待ち',
-                '面接官の返答待ち',
-                '学生待ち',
-                '担当者待ち',
-                '面接官待ち'
-            )) DESC,
-            c.updated_at DESC
-    """
+    ORDER BY
+        (c.contact_status IN (
+            '学生返答待ち',
+            '面接官の返答待ち',
+            '学生待ち',
+            '担当者待ち',
+            '面接官待ち'
+        )) DESC,
+        COALESCE(c.owner, '') ASC,
+        c.name ASC
+"""
 
     candidates = conn.execute(sql, params).fetchall()
     conn.close()
@@ -74,10 +76,14 @@ def index():
 
         candidate_list.append(candidate_dict)
 
+# アラートありの候補者を上に出しつつ、担当者名順に並べる
     candidate_list.sort(
-        key=lambda x: (x["has_alert"], x["updated_at"]),
-        reverse=True
+    key=lambda x: (
+        not x["has_alert"],
+        x["owner"] or "",
+        x["name"] or ""
     )
+)
 
     popup_alerts = get_popup_alerts(candidate_list)
 
