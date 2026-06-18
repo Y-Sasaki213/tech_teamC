@@ -10,117 +10,158 @@
 
 <form class="form-card" action="{{ url_for('update_candidate', id=candidate.id) }}" method="POST">
 
-  <h3>基本情報</h3>
 
-  <label>採用者氏名</label>
-  <input type="text" name="name" value="{{ candidate.name }}" required>
+  <details class="accordion">
+    <summary class="accordion-title">基本情報</summary>
 
-  <label>担当</label>
-  <input type="text" name="owner" value="{{ candidate.owner }}">
+    <div class="accordion-content">
 
-  <label>連絡ステータス</label>
-  <select name="contact_status">
-    {% for status in ["学生返答待ち", "面接官の返答待ち", "未連絡", "保留", "お見送り", "内定承諾", "辞退", "その他"] %}
-    <option value="{{ status }}" {% if candidate.contact_status==status %}selected{% endif %}>
-      {{ status }}
-    </option>
-    {% endfor %}
-  </select>
 
-  <h3>初期フェーズ</h3>
+      <label>採用者氏名</label>
+      <input type="text" name="name" value="{{ candidate.name }}" required>
 
-  <label>カジュアル面談 / 説明会 担当者名</label>
-  <input type="text" name="casual_event_staff" value="{{ candidate.casual_event_staff }}">
+      <label>担当</label>
+      <input type="text" name="owner" value="{{ candidate.owner }}">
 
-  <label>書類選考</label>
-  <select name="document_screening">
-    <option {% if candidate.document_screening=="未済" %}selected{% endif %}>未済</option>
-    <option {% if candidate.document_screening=="済" %}selected{% endif %}>済</option>
-  </select>
+      <label>連絡ステータス</label>
+      <select name="contact_status">
+        {% for status in ["学生返答待ち", "面接官の返答待ち", "未連絡", "保留", "お見送り", "内定承諾", "辞退", "その他"] %}
+        <option value="{{ status }}" {% if candidate.contact_status==status %}selected{% endif %}>
+          {{ status }}
+        </option>
+        {% endfor %}
+      </select>
 
-  <label>リマインド</label>
-  <select name="initial_remind">
-    <option {% if candidate.initial_remind=="未済" %}selected{% endif %}>未済</option>
-    <option {% if candidate.initial_remind=="済" %}selected{% endif %}>済</option>
-  </select>
+    </div>
+  </details>
 
-  <h3>1次面接</h3>
 
-  <label>実施日</label>
-  <input type="date" name="first_interview_date" value="{{ candidate.first_interview_date }}">
+  <details class="accordion">
+    <summary class="accordion-title">初期フェーズ</summary>
 
-  <label>担当者</label>
-  <input type="text" name="first_interviewer" value="{{ candidate.first_interviewer }}">
+    <div class="accordion-content">
 
-  <label>座談会</label>
-  <input type="text" name="first_meeting" value="{{ candidate.first_meeting }}">
+      <label>カジュアル面談 / 説明会 担当者名</label>
+      <input type="text" name="casual_event_staff" value="{{ candidate.casual_event_staff }}">
 
-  <label>TEL</label>
-  <select name="first_tel">
-    <option {% if candidate.first_tel=="未済" %}selected{% endif %}>未済</option>
-    <option {% if candidate.first_tel=="済" %}selected{% endif %}>済</option>
-  </select>
+      <label>書類選考</label>
+      <select name="document_screening">
+        <option {% if candidate.document_screening=="未済" %}selected{% endif %}>未済</option>
+        <option {% if candidate.document_screening=="済" %}selected{% endif %}>済</option>
+      </select>
 
-  <label>リマインド</label>
-  <select name="first_remind">
-    <option {% if candidate.first_remind=="未済" %}selected{% endif %}>未済</option>
-    <option {% if candidate.first_remind=="済" %}selected{% endif %}>済</option>
-  </select>
 
-  <label>実施時期</label>
-  <input type="text" name="first_period" value="{{ candidate.first_period }}">
 
-  <h3>2次面接</h3>
+      <label>リマインド</label>
+      <select name="initial_remind">
+        <option {% if candidate.initial_remind=="未済" %}selected{% endif %}>未済</option>
+        <option {% if candidate.initial_remind=="済" %}selected{% endif %}>済</option>
+      </select>
 
-  <label>実施日</label>
-  <input type="date" name="second_interview_date" value="{{ candidate.second_interview_date }}">
+    </div>
+  </details>
 
-  <label>担当者</label>
-  <input type="text" name="second_interviewer" value="{{ candidate.second_interviewer }}">
+  <details class="accordion">
+    <summary class="accordion-title">1次面接</summary>
 
-  <label>TEL</label>
-  <select name="second_tel">
-    <option {% if candidate.second_tel=="未済" %}selected{% endif %}>未済</option>
-    <option {% if candidate.second_tel=="済" %}selected{% endif %}>済</option>
-  </select>
+    <div class="accordion-content">
 
-  <label>リマインド</label>
-  <select name="second_remind">
-    <option {% if candidate.second_remind=="未済" %}selected{% endif %}>未済</option>
-    <option {% if candidate.second_remind=="済" %}selected{% endif %}>済</option>
-  </select>
 
-  <label>成績証明</label>
-  <select name="transcript">
-    <option {% if candidate.transcript=="未済" %}selected{% endif %}>未済</option>
-    <option {% if candidate.transcript=="済" %}selected{% endif %}>済</option>
-  </select>
+      <label>実施日</label>
+      <input type="date" name="first_interview_date" value="{{ candidate.first_interview_date }}">
 
-  <label>実施時期</label>
-  <input type="text" name="second_period" value="{{ candidate.second_period }}">
+      <label>担当者</label>
+      <input type="text" name="first_interviewer" value="{{ candidate.first_interviewer }}">
 
-  <h3>最終フェーズ</h3>
+      <label>座談会</label>
+      <input type="text" name="first_meeting" value="{{ candidate.first_meeting }}">
 
-  <label>最終面接</label>
-  <input type="text" name="final_interview" value="{{ candidate.final_interview }}">
+      <label>TEL</label>
+      <select name="first_tel">
+        <option {% if candidate.first_tel=="未済" %}selected{% endif %}>未済</option>
+        <option {% if candidate.first_tel=="済" %}selected{% endif %}>済</option>
+      </select>
 
-  <label>ピザパ予定</label>
-  <input type="date" name="pizza_party_plan" value="{{ candidate.pizza_party_plan }}">
+      <label>リマインド</label>
+      <select name="first_remind">
+        <option {% if candidate.first_remind=="未済" %}selected{% endif %}>未済</option>
+        <option {% if candidate.first_remind=="済" %}selected{% endif %}>済</option>
+      </select>
 
-  <label>ピザパ参加</label>
-  <select name="pizza_party_join">
-    {% for join_status in ["未定", "参加", "不参加"] %}
-    <option value="{{ join_status }}" {% if candidate.pizza_party_join==join_status %}selected{% endif %}>
-      {{ join_status }}
-    </option>
-    {% endfor %}
-  </select>
+      <label>実施時期</label>
+      <input type="text" name="first_period" value="{{ candidate.first_period }}">
 
-  <label>承諾目安</label>
-  <input type="text" name="acceptance_estimate" value="{{ candidate.acceptance_estimate }}">
+    </div>
+  </details>
 
-  <label>内定〆切</label>
-  <input type="date" name="offer_deadline" value="{{ candidate.offer_deadline }}">
+
+  <details class="accordion">
+    <summary class="accordion-title">2次面接</summary>
+
+    <div class="accordion-content">
+
+
+      <label>実施日</label>
+      <input type="date" name="second_interview_date" value="{{ candidate.second_interview_date }}">
+
+      <label>担当者</label>
+      <input type="text" name="second_interviewer" value="{{ candidate.second_interviewer }}">
+
+      <label>TEL</label>
+      <select name="second_tel">
+        <option {% if candidate.second_tel=="未済" %}selected{% endif %}>未済</option>
+        <option {% if candidate.second_tel=="済" %}selected{% endif %}>済</option>
+      </select>
+
+      <label>リマインド</label>
+      <select name="second_remind">
+        <option {% if candidate.second_remind=="未済" %}selected{% endif %}>未済</option>
+        <option {% if candidate.second_remind=="済" %}selected{% endif %}>済</option>
+      </select>
+
+      <label>成績証明</label>
+      <select name="transcript">
+        <option {% if candidate.transcript=="未済" %}selected{% endif %}>未済</option>
+        <option {% if candidate.transcript=="済" %}selected{% endif %}>済</option>
+      </select>
+
+      <label>実施時期</label>
+      <input type="text" name="second_period" value="{{ candidate.second_period }}">
+
+    </div>
+  </details>
+
+
+  <details class="accordion">
+    <summary class="accordion-title">最終フェーズ</summary>
+
+    <div class="accordion-content">
+
+
+      <label>最終面接</label>
+      <input type="text" name="final_interview" value="{{ candidate.final_interview }}">
+
+      <label>ピザパ予定</label>
+      <input type="date" name="pizza_party_plan" value="{{ candidate.pizza_party_plan }}">
+
+      <label>ピザパ参加</label>
+      <select name="pizza_party_join">
+        {% for join_status in ["未定", "参加", "不参加"] %}
+        <option value="{{ join_status }}" {% if candidate.pizza_party_join==join_status %}selected{% endif %}>
+          {{ join_status }}
+        </option>
+        {% endfor %}
+      </select>
+
+      <label>承諾目安</label>
+      <input type="text" name="acceptance_estimate" value="{{ candidate.acceptance_estimate }}">
+
+      <label>内定〆切</label>
+      <input type="date" name="offer_deadline" value="{{ candidate.offer_deadline }}">
+
+    </div>
+  </details>
+
 
   <button class="btn primary" type="submit">更新する</button>
 
