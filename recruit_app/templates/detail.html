@@ -17,51 +17,66 @@
 </div>
 {% endif %}
 
-<section class="detail-card">
-  <h3>基本情報</h3>
-  <p><strong>氏名：</strong>{{ candidate.name }}</p>
-  <p><strong>担当：</strong>{{ candidate.owner }}</p>
-  <p><strong>連絡ステータス：</strong>{{ candidate.contact_status }}</p>
-  <p><strong>登録日：</strong>{{ candidate.created_at }}</p>
-  <p><strong>最終更新日：</strong>{{ candidate.updated_at }}</p>
-</section>
+<div class="accordion-grid">
+  <!-- 基本情報 -->
+  <details class="accordion">
+    <summary class="accordion-title">基本情報</summary>
+    <div class="accordion-content">
 
-<section class="detail-card">
-  <h3>初期フェーズ</h3>
-  <p><strong>カジュアル面談 / 説明会 担当者：</strong>{{ candidate.casual_event_staff }}</p>
-  <p><strong>書類選考：</strong>{{ candidate.document_screening }}</p>
-  <p><strong>リマインド：</strong>{{ candidate.initial_remind }}</p>
-</section>
+      <p><strong>氏名：</strong>{{ candidate.name }}</p>
+      <p><strong>担当：</strong>{{ candidate.owner }}</p>
+      <p><strong>連絡ステータス：</strong>{{ candidate.contact_status }}</p>
+      <p><strong>登録日：</strong>{{ candidate.created_at }}</p>
+      <p><strong>最終更新日：</strong>{{ candidate.updated_at }}</p>
+    </div>
+  </details>
 
-<section class="detail-card">
-  <h3>1次面接</h3>
-  <p><strong>実施日：</strong>{{ candidate.first_interview_date }}</p>
-  <p><strong>担当者：</strong>{{ candidate.first_interviewer }}</p>
-  <p><strong>座談会：</strong>{{ candidate.first_meeting }}</p>
-  <p><strong>TEL：</strong>{{ candidate.first_tel }}</p>
-  <p><strong>リマインド：</strong>{{ candidate.first_remind }}</p>
-  <p><strong>実施時期：</strong>{{ candidate.first_period }}</p>
-</section>
+  <!--初期フェーズ-->
+  <details class="accordion">
+    <summary class="accordion-title">初期フェーズ</summary>
+    <div class="accordion-content">
+      <p><strong>カジュアル面談 / 説明会 担当者：</strong>{{ candidate.casual_event_staff }}</p>
+      <p><strong>書類選考：</strong>{{ candidate.document_screening }}</p>
+      <p><strong>リマインド：</strong>{{ candidate.initial_remind }}</p>
+    </div>
+  </details>
 
-<section class="detail-card">
-  <h3>2次面接</h3>
-  <p><strong>実施日：</strong>{{ candidate.second_interview_date }}</p>
-  <p><strong>担当者：</strong>{{ candidate.second_interviewer }}</p>
-  <p><strong>TEL：</strong>{{ candidate.second_tel }}</p>
-  <p><strong>リマインド：</strong>{{ candidate.second_remind }}</p>
-  <p><strong>成績証明：</strong>{{ candidate.transcript }}</p>
-  <p><strong>実施時期：</strong>{{ candidate.second_period }}</p>
-</section>
+  <details class="accordion">
+    <summary class="accordion-title">1次面接</summary>
+    <div class="accordion-content">
 
-<section class="detail-card">
-  <h3>最終フェーズ</h3>
-  <p><strong>最終面接：</strong>{{ candidate.final_interview }}</p>
-  <p><strong>ピザパ予定：</strong>{{ candidate.pizza_party_plan }}</p>
-  <p><strong>ピザパ参加：</strong>{{ candidate.pizza_party_join }}</p>
-  <p><strong>承諾目安：</strong>{{ candidate.acceptance_estimate }}</p>
-  <p><strong>内定〆切：</strong>{{ candidate.offer_deadline }}</p>
-</section>
+      <p><strong>実施日：</strong>{{ candidate.first_interview_date }}</p>
+      <p><strong>担当者：</strong>{{ candidate.first_interviewer }}</p>
+      <p><strong>座談会：</strong>{{ candidate.first_meeting }}</p>
+      <p><strong>TEL：</strong>{{ candidate.first_tel }}</p>
+      <p><strong>リマインド：</strong>{{ candidate.first_remind }}</p>
+      <p><strong>実施時期：</strong>{{ candidate.first_period }}</p>
+    </div>
+  </details>
 
+  <details class="accordion">
+    <summary class="accordion-title">2次面接</summary>
+    <div class="accordion-content">
+      <p><strong>実施日：</strong>{{ candidate.second_interview_date }}</p>
+      <p><strong>担当者：</strong>{{ candidate.second_interviewer }}</p>
+      <p><strong>TEL：</strong>{{ candidate.second_tel }}</p>
+      <p><strong>リマインド：</strong>{{ candidate.second_remind }}</p>
+      <p><strong>成績証明：</strong>{{ candidate.transcript }}</p>
+      <p><strong>実施時期：</strong>{{ candidate.second_period }}</p>
+    </div>
+  </details>
+
+  <details class="accordion">
+    <summary class="accordion-title">最終フェーズ</summary>
+    <div class="accordion-content">
+      <p><strong>最終面接：</strong>{{ candidate.final_interview }}</p>
+      <p><strong>ピザパ予定：</strong>{{ candidate.pizza_party_plan }}</p>
+      <p><strong>ピザパ参加：</strong>{{ candidate.pizza_party_join }}</p>
+      <p><strong>承諾目安：</strong>{{ candidate.acceptance_estimate }}</p>
+      <p><strong>内定〆切：</strong>{{ candidate.offer_deadline }}</p>
+    </div>
+  </details>
+</div>
 <a class="btn" href="{{ url_for('index') }}">一覧に戻る</a>
 
 {% endblock %}
