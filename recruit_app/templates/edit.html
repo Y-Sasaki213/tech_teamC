@@ -50,6 +50,8 @@
         <option {% if candidate.document_screening=="済" %}selected{% endif %}>済</option>
       </select>
 
+
+
       <label>リマインド</label>
       <select name="initial_remind">
         <option {% if candidate.initial_remind=="未済" %}selected{% endif %}>未済</option>
@@ -159,6 +161,7 @@
 
     </div>
   </details>
+
 
   <button class="btn primary" type="submit">更新する</button>
 
