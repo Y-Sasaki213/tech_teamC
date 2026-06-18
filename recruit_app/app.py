@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 
 from db import get_db_connection, init_db
-from alerts import get_candidate_alerts
+from alerts import get_candidate_alerts, get_popup_alerts
 
 
 app = Flask(__name__)
@@ -12,13 +12,11 @@ app = Flask(__name__)
 # =========================
 @app.route("/")
 def index():
-    # 検索条件をGETパラメータから取得
     search_name = request.args.get("name", "")
     search_owner = request.args.get("owner", "")
 
     conn = get_db_connection()
 
-    # ベースSQL
     sql = """
         SELECT
             c.id,
@@ -41,17 +39,14 @@ def index():
 
     params = []
 
-    # 採用者氏名で部分一致検索
     if search_name:
         sql += " AND c.name LIKE ?"
         params.append(f"%{search_name}%")
 
-    # 担当者名で部分一致検索
     if search_owner:
         sql += " AND c.owner LIKE ?"
         params.append(f"%{search_owner}%")
 
-    # 待ち状態の候補者を上に出しつつ、更新日が新しい順に並べる
     sql += """
         ORDER BY
             (c.contact_status IN (
@@ -72,26 +67,28 @@ def index():
     for candidate in candidates:
         candidate_dict = dict(candidate)
 
-        # 候補者ごとのアラートを取得
-        alerts = get_candidate_alerts(candidate)
-
+        alerts = get_candidate_alerts(candidate_dict)
         candidate_dict["alerts"] = alerts
         candidate_dict["has_alert"] = len(alerts) > 0
         candidate_dict["alert_count"] = len(alerts)
 
         candidate_list.append(candidate_dict)
 
-    # アラートありの候補者を一番上に表示する
     candidate_list.sort(
         key=lambda x: (x["has_alert"], x["updated_at"]),
         reverse=True
     )
 
+    popup_alerts = get_popup_alerts(candidate_list)
+
+    print("popup_alerts =", popup_alerts)  # デバッグ用
+
     return render_template(
         "index.html",
         candidates=candidate_list,
         search_name=search_name,
-        search_owner=search_owner
+        search_owner=search_owner,
+        popup_alerts=popup_alerts,
     )
 
 
@@ -140,17 +137,19 @@ def create_candidate():
     cursor = conn.cursor()
 
     # candidatesテーブルに基本情報を登録
+    
     cursor.execute("""
         INSERT INTO candidates (
             name,
             owner,
             contact_status,
             created_at,
-            updated_at
+            updated_at,
             last_updated_field
         )
-        VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)
     """, (name, owner, contact_status, "新規登録"))
+
 
     # 直前に登録した候補者IDを取得
     candidate_id = cursor.lastrowid

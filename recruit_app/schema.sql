@@ -7,7 +7,8 @@ CREATE TABLE candidates (
     owner TEXT,
     contact_status TEXT NOT NULL DEFAULT '未連絡',
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_updated_field TEXT DEFAULT '新規登録'
 );
 
 CREATE TABLE candidate_progress (
@@ -18,14 +19,12 @@ CREATE TABLE candidate_progress (
     document_screening TEXT DEFAULT '未済',
     initial_remind TEXT DEFAULT '未済',
 
-
     first_interview_date TEXT,
     first_interviewer TEXT,
     first_meeting TEXT,
     first_tel TEXT DEFAULT '未済',
     first_remind TEXT DEFAULT '未済',
     first_period TEXT,
-
 
     second_interview_date TEXT,
     second_interviewer TEXT,
@@ -43,3 +42,36 @@ CREATE TABLE candidate_progress (
     FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
 );
 
+INSERT INTO candidates (
+    name,
+    owner,
+    contact_status,
+    created_at,
+    updated_at,
+    last_updated_field
+)
+VALUES (
+    'テスト太郎',
+    '佐々木',
+    '担当者待ち',
+    datetime('now', '-8 days'),
+    datetime('now', '-8 days'),
+    '一次面接'
+);
+
+INSERT INTO candidate_progress (
+    candidate_id,
+    first_interview_date,
+    second_interview_date,
+    final_interview,
+    pizza_party_plan,
+    offer_deadline
+)
+VALUES (
+    1,
+    date('now', '-8 days'),
+    NULL,
+    NULL,
+    NULL,
+    NULL
+);
