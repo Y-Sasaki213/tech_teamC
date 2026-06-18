@@ -53,3 +53,27 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+//その他入力欄　new.html
+document.addEventListener("DOMContentLoaded", function () {
+  const contactStatus = document.getElementById("contactStatus");
+  const contactMemoArea = document.getElementById("contactMemoArea");
+  const contactMemo = document.getElementById("contactMemo");
+
+  if (!contactStatus || !contactMemoArea || !contactMemo) {
+    return;
+  }
+
+  function toggleContactMemo() {
+    if (contactStatus.value === "その他") {
+      contactMemoArea.style.display = "block";
+    } else {
+      contactMemoArea.style.display = "none";
+      contactMemo.value = "";
+    }
+  }
+
+  toggleContactMemo();
+
+  contactStatus.addEventListener("change", toggleContactMemo);
+});

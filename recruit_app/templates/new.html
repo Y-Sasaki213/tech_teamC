@@ -21,7 +21,7 @@
       <input type="text" name="owner">
 
       <label>連絡ステータス</label>
-      <select name="contact_status">
+      <select name="contact_status" id="contactStatus">
         <option>学生返答待ち</option>
         <option>面接官の返答待ち</option>
         <option selected>未連絡</option>
@@ -31,6 +31,11 @@
         <option>辞退</option>
         <option>その他</option>
       </select>
+
+      <div id="contactMemoArea" class="contact-memo-area">
+        <label>その他メモ</label>
+        <textarea name="contact_memo" id="contactMemo" rows="3" placeholder="自由入力"></textarea>
+      </div>
 
     </div>
   </details>
@@ -163,5 +168,8 @@
   <button class="btn primary" type="submit">登録する</button>
 
 </form>
+
+<script src="{{ url_for('static', filename='js/form.js') }}"></script>
+
 
 {% endblock %}

@@ -48,3 +48,14 @@
   background-color: #dceeff;
   color: #0056b3;
 }
+
+.contact-memo-area {
+  display: none;
+  margin-top: 12px;
+}
+
+.contact-memo-area textarea {
+  width: 100%;
+  min-height: 80px;
+  resize: vertical;
+}
