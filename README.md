@@ -1,6 +1,7 @@
 # tech_teamC
 anaai　ワロタ
 mio　あほ
+sasa パイセン
 ## 概要
 チーム開発研修用のプロジェクト
  
