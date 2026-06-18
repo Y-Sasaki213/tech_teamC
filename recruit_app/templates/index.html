@@ -77,5 +77,45 @@
 </table>
 
 {% endif %}
+<!-- 右下ポップアップ通知 -->
 
+<div id="popup-alert-container">
+  {% for alert in popup_alerts %}
+    <div
+      class="popup-alert"
+      data-alert-id="{{ alert.id }}"
+      data-detail-url="{{ url_for('detail_candidate', id=alert.candidate_id) }}"
+    >
+      <button class="popup-close-btn" type="button">×</button>
+
+      <div class="popup-alert-content">
+        <div class="popup-alert-title">対応確認アラート</div>
+
+        <div class="popup-alert-row">
+          <span class="popup-label">候補者：</span>
+          <span>{{ alert.candidate_name }}</span>
+        </div>
+
+        <div class="popup-alert-row">
+          <span class="popup-label">担当者：</span>
+          <span>{{ alert.owner }}</span>
+        </div>
+
+        <div class="popup-alert-row">
+          <span class="popup-label">連絡ステータス：</span>
+          <span>{{ alert.contact_status }}</span>
+        </div>
+
+        <div class="popup-alert-row">
+          <span class="popup-label">最終アクション：</span>
+          <span>{{ alert.latest_action_label }}（{{ alert.latest_action_date }}）</span>
+        </div>
+
+        <div class="popup-alert-days">
+          {{ alert.days_passed }}日経過しています
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}
