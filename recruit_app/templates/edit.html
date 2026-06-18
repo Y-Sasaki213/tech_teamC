@@ -24,13 +24,20 @@
       <input type="text" name="owner" value="{{ candidate.owner }}">
 
       <label>連絡ステータス</label>
-      <select name="contact_status">
+      <select name="contact_status" id="contactStatus">
         {% for status in ["学生返答待ち", "面接官の返答待ち", "未連絡", "保留", "お見送り", "内定承諾", "辞退", "その他"] %}
         <option value="{{ status }}" {% if candidate.contact_status==status %}selected{% endif %}>
           {{ status }}
         </option>
         {% endfor %}
       </select>
+
+      <div id="contactMemoArea" class="contact-memo-area">
+        <label>その他メモ</label>
+        <textarea name="contact_memo" id="contactMemo" rows="3"
+          placeholder="その他の内容を入力してください">{{ candidate.contact_memo or "" }}</textarea>
+      </div>
+
 
     </div>
   </details>
