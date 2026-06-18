@@ -13,3 +13,38 @@
   padding-bottom: 8px;
   border-bottom: 2px solid #e5e7eb;
 }
+
+.accordion {
+  margin-bottom: 16px;
+  border: 1px solid #dcdfe6;
+  border-radius: 10px;
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+.accordion-title {
+  padding: 14px 18px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #f4f6f8;
+  color: #333;
+  list-style: none;
+}
+
+.accordion-title:hover {
+  background-color: #eaf1f8;
+}
+
+.accordion-content {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.accordion[open] .accordion-title {
+  background-color: #dceeff;
+  color: #0056b3;
+}
