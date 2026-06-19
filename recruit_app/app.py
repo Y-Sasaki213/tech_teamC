@@ -335,7 +335,7 @@ def update_candidate(id):
         #last_updated_field = "カジュアル面談"
 
     if old_data["casual_event_staff"] != casual_event_staff:
-        last_updated_field = "カジュアル面談"
+        last_updated_field = "カジュアル面談/説明会"
 
     elif old_data["document_screening"] != document_screening:
         last_updated_field = "書類選考"
@@ -343,26 +343,14 @@ def update_candidate(id):
     elif old_data["first_interview_date"] != first_interview_date:
         last_updated_field = "一次面接"
 
-    elif old_data["first_meeting"] != first_meeting:
-        last_updated_field = "座談会"
-
     elif old_data["second_interview_date"] != second_interview_date:
         last_updated_field = "二次面接"
-
-    elif old_data["transcript"] != transcript:
-        last_updated_field = "成績証明"
 
     elif old_data["final_interview"] != final_interview:
         last_updated_field = "最終面接"
 
-    elif old_data["pizza_party_join"] != pizza_party_join:
-        last_updated_field = "ピザパ参加"
-
-    elif old_data["acceptance_estimate"] != acceptance_estimate:
-        last_updated_field = "承諾目安"
-
     elif old_data["offer_deadline"] != offer_deadline:
-        last_updated_field = "内定〆切"
+        last_updated_field = "内定"
 
     # candidatesテーブルを更新
     cursor.execute("""
