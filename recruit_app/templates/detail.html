@@ -48,7 +48,7 @@
       <p><strong>実施日：</strong>{{ candidate.first_interview_date }}</p>
       <p><strong>担当者：</strong>{{ candidate.first_interviewer }}</p>
       <p><strong>リマインド：</strong>{{ candidate.first_remind }}</p>
-      
+
     </div>
   </details>
 
@@ -61,19 +61,23 @@
       <p><strong>座談会：</strong>{{ candidate.first_meeting }}</p>
       <p><strong>TEL：</strong>{{ candidate.second_tel }}</p>
       <p><strong>リマインド：</strong>{{ candidate.second_remind }}</p>
-      
     </div>
   </details>
 
   <details class="accordion">
-    <summary class="accordion-title">最終フェーズ</summary>
+    <summary class="accordion-title">最終面接</summary>
     <div class="accordion-content">
-      <p><strong>最終面接：</strong>{{ candidate.final_interview }}</p>
       <p><strong>実施予定時期：</strong>{{ candidate.final_period }}</p>
       <p><strong>実施日：</strong>{{ candidate.final_interview_date }}</p>
+      <p><strong>担当者：</strong>{{ candidate.final_interview }}</p>
       <p><strong>成績証明：</strong>{{ candidate.transcript }}</p>
+    </div>
+  </details>
 
-      
+  <details class="accordion">
+    <summary class="accordion-title">内定</summary>
+    <div class="accordion-content">
+
       <p><strong>懇親会予定時期：</strong>{{ candidate.pizza_party_plan }}</p>
       <p><strong>懇親会参加：</strong>{{ candidate.pizza_party_join }}</p>
       <p><strong>承諾目安：</strong>{{ candidate.acceptance_estimate }}</p>
