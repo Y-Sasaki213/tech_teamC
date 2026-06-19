@@ -55,12 +55,6 @@
         <option>済</option>
       </select>
 
-      <label>リマインド</label>
-      <select name="initial_remind">
-        <option>未済</option>
-        <option>済</option>
-      </select>
-
     </div>
   </details>
 
@@ -70,6 +64,8 @@
 
     <div class="accordion-content">
 
+      <label>実施予定時期</label>
+      <input type="text" name="first_period" placeholder="例：6月中旬">
 
       <label>実施日</label>
       <input type="date" name="first_interview_date">
@@ -77,23 +73,11 @@
       <label>担当者</label>
       <input type="text" name="first_interviewer">
 
-      <label>座談会</label>
-      <input type="text" name="first_meeting">
-
-      <label>TEL</label>
-      <select name="first_tel">
-        <option>未済</option>
-        <option>済</option>
-      </select>
-
       <label>リマインド</label>
       <select name="first_remind">
         <option>未済</option>
         <option>済</option>
       </select>
-
-      <label>実施時期</label>
-      <input type="text" name="first_period" placeholder="例：6月中旬">
 
     </div>
   </details>
@@ -105,12 +89,17 @@
 
     <div class="accordion-content">
 
+      <label>実施予定時期</label>
+      <input type="text" name="second_period" placeholder="例：7月上旬">
 
       <label>実施日</label>
       <input type="date" name="second_interview_date">
 
       <label>担当者</label>
       <input type="text" name="second_interviewer">
+
+      <label>座談会</label>
+      <input type="text" name="first_meeting">
 
       <label>TEL</label>
       <select name="second_tel">
@@ -123,15 +112,6 @@
         <option>未済</option>
         <option>済</option>
       </select>
-
-      <label>成績証明</label>
-      <select name="transcript">
-        <option>未済</option>
-        <option>済</option>
-      </select>
-
-      <label>実施時期</label>
-      <input type="text" name="second_period" placeholder="例：7月上旬">
 
     </div>
   </details>
@@ -146,10 +126,22 @@
       <label>最終面接</label>
       <input type="text" name="final_interview">
 
-      <label>ピザパ予定</label>
+      <label>実施予定時期</label>
+      <input type="text" name="final_period" placeholder="例：7月上旬">
+
+      <label>実施日</label>
+      <input type="date" name="final_interview_date">
+
+      <label>成績証明</label>
+      <select name="transcript">
+        <option>未済</option>
+        <option>済</option>
+      </select>
+
+      <label>懇親会予定時期</label>
       <input type="date" name="pizza_party_plan">
 
-      <label>ピザパ参加</label>
+      <label>懇親会参加</label>
       <select name="pizza_party_join">
         <option>未定</option>
         <option>参加</option>
@@ -159,7 +151,7 @@
       <label>承諾目安</label>
       <input type="text" name="acceptance_estimate">
 
-      <label>内定〆切</label>
+      <label>承諾期限</label>
       <input type="date" name="offer_deadline">
 
     </div>
