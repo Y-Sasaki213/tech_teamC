@@ -30,6 +30,7 @@
       <th>担当</th>
       <th>連絡ステータス</th>
       <th>選考フェーズ</th>
+      <th>次回選考日</th>
       <th>アラート</th>
       <th>操作</th>
     </tr>
@@ -47,6 +48,7 @@
         </span>
       </td>
       <td>{{ candidate.last_updated_field }}</td>
+      <td>{{ candidate.next_selection_date }}</td>
       <td>
         {% if candidate.has_alert %}
         <span class="alert-badge">要対応（{{ candidate.alert_count }}）</span>

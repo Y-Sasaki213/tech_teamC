@@ -32,7 +32,7 @@ def index():
             p.pizza_party_plan,
             p.offer_deadline
         FROM candidates c
-        JOIN candidate_progress p
+        LEFT JOIN candidate_progress p
         ON c.id = p.candidate_id
         WHERE 1 = 1
     """
@@ -47,19 +47,18 @@ def index():
         sql += " AND c.owner LIKE ?"
         params.append(f"%{search_owner}%")
 
-# 待ち状態の候補者を上に出しつつ、担当者名順に並べる
     sql += """
-    ORDER BY
-        (c.contact_status IN (
-            '学生返答待ち',
-            '面接官の返答待ち',
-            '学生待ち',
-            '担当者待ち',
-            '面接官待ち'
-        )) DESC,
-        COALESCE(c.owner, '') ASC,
-        c.name ASC
-"""
+        ORDER BY
+            (c.contact_status IN (
+                '学生返答待ち',
+                '面接官の返答待ち',
+                '学生待ち',
+                '担当者待ち',
+                '面接官待ち'
+            )) DESC,
+            COALESCE(c.owner, '') ASC,
+            c.name ASC
+    """
 
     candidates = conn.execute(sql, params).fetchall()
     conn.close()
@@ -69,6 +68,36 @@ def index():
     for candidate in candidates:
         candidate_dict = dict(candidate)
 
+        # =========================
+        # 次回選考日を判定する処理
+        # =========================
+        current_phase = candidate_dict.get("last_updated_field")
+
+        next_selection_date = ""
+
+        if current_phase == "新規登録":
+            next_selection_date = candidate_dict.get("first_interview_date")
+
+        elif current_phase == "カジュアル面談/説明会":
+            next_selection_date = candidate_dict.get("first_interview_date")
+
+        elif current_phase == "書類選考":
+            next_selection_date = candidate_dict.get("first_interview_date")
+
+        elif current_phase == "一次面接":
+            next_selection_date = candidate_dict.get("second_interview_date")
+
+        elif current_phase == "二次面接":
+            next_selection_date = candidate_dict.get("final_interview")
+
+        elif current_phase == "最終面接":
+            next_selection_date = candidate_dict.get("pizza_party_plan")
+
+        elif current_phase == "内定":
+            next_selection_date = candidate_dict.get("offer_deadline")
+
+        candidate_dict["next_selection_date"] = next_selection_date or "-"
+
         alerts = get_candidate_alerts(candidate_dict)
         candidate_dict["alerts"] = alerts
         candidate_dict["has_alert"] = len(alerts) > 0
@@ -76,18 +105,16 @@ def index():
 
         candidate_list.append(candidate_dict)
 
-# アラートありの候補者を上に出しつつ、担当者名順に並べる
+    # アラートありの候補者を上に出しつつ、担当者名順に並べる
     candidate_list.sort(
-    key=lambda x: (
-        not x["has_alert"],
-        x["owner"] or "",
-        x["name"] or ""
+        key=lambda x: (
+            not x["has_alert"],
+            x["owner"] or "",
+            x["name"] or ""
+        )
     )
-)
 
     popup_alerts = get_popup_alerts(candidate_list)
-
-    print("popup_alerts =", popup_alerts)  # デバッグ用
 
     return render_template(
         "index.html",
@@ -96,8 +123,6 @@ def index():
         search_owner=search_owner,
         popup_alerts=popup_alerts,
     )
-
-
 # =========================
 # 新規登録画面
 # =========================
@@ -138,6 +163,8 @@ def create_candidate():
     pizza_party_join = request.form.get("pizza_party_join")
     acceptance_estimate = request.form.get("acceptance_estimate")
     offer_deadline = request.form.get("offer_deadline")
+
+    
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -326,7 +353,7 @@ def update_candidate(id):
     SELECT *
     FROM candidate_progress
     WHERE candidate_id = ?
-""", (id,)).fetchone()
+""", (id,)).fetchall()
 
 
     last_updated_field = "変更なし"
