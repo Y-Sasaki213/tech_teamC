@@ -66,7 +66,7 @@
 body {
   margin: 0;
   font-family: "Yu Gothic", "Hiragino Sans", sans-serif;
-  background: #f6f7fb;
+  background: #f0f3e5;
   color: #222;
 }
 
@@ -135,6 +135,7 @@ body {
   gap: 12px;
   align-items: flex-end;
   flex-wrap: wrap;
+  margin-bottom: 32px;
 }
 
 .form-group {
@@ -170,6 +171,20 @@ body {
   gap: 10px;
   flex-wrap: wrap;
 }
+
+
+/* 検索入力欄 */
+.search-form input[type="text"] {
+  width: 220px;
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  outline: none;
+  background-color: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
 
 .table-card {
   background: #fff;
