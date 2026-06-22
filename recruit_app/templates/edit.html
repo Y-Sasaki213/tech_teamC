@@ -80,7 +80,7 @@
         <option {% if candidate.first_remind=="済" %}selected{% endif %}>済</option>
       </select>
 
-      
+
     </div>
   </details>
 
@@ -114,9 +114,9 @@
         <option {% if candidate.second_remind=="済" %}selected{% endif %}>済</option>
       </select>
 
-      
 
-      
+
+
     </div>
   </details>
 
@@ -167,5 +167,8 @@
   <button class="btn primary" type="submit">更新する</button>
 
 </form>
+
+<script src="{{ url_for('static', filename='js/form.js') }}"></script>
+
 
 {% endblock %}
