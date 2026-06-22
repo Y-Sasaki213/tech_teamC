@@ -13,7 +13,13 @@
 
 {% if has_alert %}
 <div class="alert-box">
-  最終更新日から7日以上経過しています。対応状況を確認してください。
+  <strong>⚠ アラートがあります</strong>
+
+  <ul class="alert-detail-list">
+    {% for alert in alerts %}
+    <li>{{ alert }}</li>
+    {% endfor %}
+  </ul>
 </div>
 {% endif %}
 
