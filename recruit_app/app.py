@@ -32,7 +32,9 @@ def index():
             p.second_interview_date,
             p.final_interview,
             p.pizza_party_plan,
-            p.offer_deadline
+            p.offer_deadline,
+            p.first_period,
+            p.second_period
         FROM candidates c
         LEFT JOIN candidate_progress p
         ON c.id = p.candidate_id
