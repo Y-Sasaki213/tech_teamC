@@ -249,6 +249,84 @@ def create_candidate():
 
     return redirect(url_for("index"))
 
+# =========================
+# 詳細画面用：アラート対象項目の判定
+# =========================
+def build_alert_marks(alerts):
+    """
+    アラート文を見て、詳細画面のどの項目にマークを付けるか判定する。
+
+    戻り値の例：
+    {
+        "basic": False,
+        "first_interview": False,
+        "second_interview": True,
+        "second_period": True,
+        "second_interview_date": True,
+    }
+    """
+
+    marks = {
+        "basic": False,
+
+        "first_interview": False,
+        "first_period": False,
+        "first_interview_date": False,
+
+        "second_interview": False,
+        "second_period": False,
+        "second_interview_date": False,
+
+        "final_phase": False,
+        "final_interview": False,
+
+        "offer_deadline": False,
+        "pizza_party_plan": False,
+    }
+
+    for alert in alerts:
+        # 最終更新アラートは基本情報にマーク
+        if "最終更新" in alert:
+            marks["basic"] = True
+
+        # 一次面接関連
+        if "一次面接" in alert:
+            marks["first_interview"] = True
+
+            if "実施予定時期" in alert:
+                marks["first_period"] = True
+                marks["first_interview_date"] = True
+
+            if "一次面接日" in alert:
+                marks["first_interview_date"] = True
+
+        # 二次面接関連
+        if "二次面接" in alert:
+            marks["second_interview"] = True
+
+            if "実施予定時期" in alert:
+                marks["second_period"] = True
+                marks["second_interview_date"] = True
+
+            if "二次面接日" in alert:
+                marks["second_interview_date"] = True
+
+        # 最終面接関連
+        if "最終面接" in alert:
+            marks["final_phase"] = True
+            marks["final_interview"] = True
+
+        # ピザパ関連
+        if "ピザパ" in alert:
+            marks["final_phase"] = True
+            marks["pizza_party_plan"] = True
+
+        # 内定締切関連
+        if "内定" in alert or "締切" in alert:
+            marks["final_phase"] = True
+            marks["offer_deadline"] = True
+
+    return marks
 
 # =========================
 # 詳細画面 Read？
@@ -279,14 +357,16 @@ def detail_candidate(id):
     if candidate is None:
         return "候補者が見つかりませんでした", 404
 
-    alerts = get_candidate_alerts(candidate)
+    alerts = get_candidate_alerts(candidate) or []
+    alert_marks = build_alert_marks(alerts)
 
     return render_template(
-        "detail.html",
-        candidate=candidate,
-        alerts=alerts,
-        has_alert=len(alerts) > 0
-    )
+    "detail.html",
+    candidate=candidate,
+    alerts=alerts,
+    has_alert=len(alerts) > 0,
+    alert_marks=alert_marks
+)
 
 
 # =========================
