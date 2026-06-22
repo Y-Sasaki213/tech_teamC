@@ -578,6 +578,26 @@ def add_contact_memo_column():
     finally:
         conn.close()
 
+# ====================
+# 選考外の一覧ページ
+# ====================
+@app.route('/addpage')
+@app.route('/addpage/<int:id>')
+def addpage(id=None):
+    candidate = None
+
+    if id is not None:
+        conn = sqlite3.connect('recruit.db')
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+
+        cur.execute('SELECT * FROM candidates WHERE id = ?', (id,))
+        candidate = cur.fetchone()
+
+        conn.close()
+
+    return render_template('addpage.html', candidate=candidate)
+
 
 # =========================
 # アプリ起動
@@ -592,4 +612,5 @@ if __name__ == "__main__":
 
 
   app.run(debug=True)
+
 
