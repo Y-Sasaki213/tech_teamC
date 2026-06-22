@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from db import get_db_connection, init_db
 from alerts import get_candidate_alerts, get_popup_alerts
 
+import sqlite3
 
 app = Flask(__name__)
 
@@ -10,6 +11,7 @@ app = Flask(__name__)
 # =========================
 # 一覧画面 Read + 検索
 # =========================
+
 @app.route("/")
 def index():
     search_name = request.args.get("name", "")
@@ -139,6 +141,7 @@ def create_candidate():
     name = request.form.get("name")
     owner = request.form.get("owner")
     contact_status = request.form.get("contact_status")
+    contact_memo = request.form.get("contact_memo")
 
     casual_event_staff = request.form.get("casual_event_staff")
     document_screening = request.form.get("document_screening")
@@ -176,12 +179,14 @@ def create_candidate():
             name,
             owner,
             contact_status,
+            contact_memo,
             created_at,
             updated_at,
             last_updated_field
         )
-        VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)
-    """, (name, owner, contact_status, "新規登録"))
+           VALUES (?, ?, ?, ?, 
+                   CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)
+    """, (name, owner, contact_status, contact_memo, "新規登録"))
 
 
     # 直前に登録した候補者IDを取得
@@ -256,6 +261,7 @@ def detail_candidate(id):
             c.name,
             c.owner,
             c.contact_status,
+            c.contact_memo,
             c.created_at,
             c.updated_at,
             c.last_updated_field,
@@ -294,6 +300,7 @@ def edit_candidate(id):
             c.name,
             c.owner,
             c.contact_status,
+            c.contact_memo,
             c.created_at,
             c.updated_at,
             c.last_updated_field,
@@ -320,7 +327,7 @@ def update_candidate(id):
     name = request.form.get("name")
     owner = request.form.get("owner")
     contact_status = request.form.get("contact_status")
-
+    contact_memo = request.form.get("contact_memo")
     casual_event_staff = request.form.get("casual_event_staff")
     document_screening = request.form.get("document_screening")
     initial_remind = request.form.get("initial_remind")
@@ -353,7 +360,7 @@ def update_candidate(id):
     SELECT *
     FROM candidate_progress
     WHERE candidate_id = ?
-""", (id,)).fetchall()
+""", (id,)).fetchone()
 
 
     last_updated_field = "変更なし"
@@ -386,10 +393,11 @@ def update_candidate(id):
             name = ?,
             owner = ?,
             contact_status = ?,
+            contact_memo = ?,
             updated_at = CURRENT_TIMESTAMP,
             last_updated_field = ?
         WHERE id = ?
-    """, (name, owner, contact_status, last_updated_field, id))
+    """, (name, owner, contact_status, contact_memo, last_updated_field, id))
 
     # candidate_progressテーブルを更新
     cursor.execute("""
@@ -468,11 +476,32 @@ def delete_candidate(id):
 def usage_page():
     return render_template("usage.html")
 
+# =========================
+# その他記入欄
+# =========================
+
+def add_contact_memo_column():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("ALTER TABLE candidates ADD COLUMN contact_memo TEXT")
+        conn.commit()
+        print("contact_memo カラムを追加しました")
+    except sqlite3.OperationalError as e:
+        if "duplicate column name" in str(e):
+            print("contact_memo カラムはすでに存在しています")
+        else:
+            raise e
+    finally:
+        conn.close()
 
 
 # =========================
 # アプリ起動
 # =========================
+add_contact_memo_column()
+
 if __name__ == "__main__":
     # 初回DB作成時だけ使う場合は、下のコメントを外す
     # init_db()
@@ -480,5 +509,5 @@ if __name__ == "__main__":
   conn = get_db_connection()
 
 
-
   app.run(debug=True)
+
