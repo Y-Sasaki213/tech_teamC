@@ -49,23 +49,61 @@
     </div>
   </details>
 
-  <details class="accordion">
-    <summary class="accordion-title">1次面接</summary>
-    <div class="accordion-content">
+  <!-- 1次面接 -->
+  <details class="accordion {% if alert_marks.first_interview %}accordion-alert{% endif %}" {% if
+    alert_marks.first_interview %}open{% endif %}>
+    <summary class="accordion-title {% if alert_marks.first_interview %}summary-alert{% endif %}">
+      1次面接
+      {% if alert_marks.first_interview %}
+      <span class="section-alert-mark">⚠</span>
+      {% endif %}
+    </summary>
 
-      <p><strong>実施予定時期：</strong>{{ candidate.first_period }}</p>
-      <p><strong>実施日：</strong>{{ candidate.first_interview_date }}</p>
+    <div class="accordion-content">
+      <p class="{% if alert_marks.first_period %}field-alert{% endif %}">
+        <strong>実施予定時期：</strong>{{ candidate.first_period }}
+        {% if alert_marks.first_period %}
+        <span class="field-alert-mark">⚠ 要確認</span>
+        {% endif %}
+      </p>
+
+      <p class="{% if alert_marks.first_interview_date %}field-alert{% endif %}">
+        <strong>実施日：</strong>{{ candidate.first_interview_date }}
+        {% if alert_marks.first_interview_date %}
+        <span class="field-alert-mark">⚠ 要確認</span>
+        {% endif %}
+      </p>
+
       <p><strong>担当者：</strong>{{ candidate.first_interviewer }}</p>
       <p><strong>リマインド：</strong>{{ candidate.first_remind }}</p>
-
     </div>
   </details>
 
-  <details class="accordion">
-    <summary class="accordion-title">2次面接</summary>
+  <!-- 2次面接 -->
+  <details class="accordion {% if alert_marks.second_interview %}accordion-alert{% endif %}" {% if
+    alert_marks.second_interview %}open{% endif %}>
+    <summary class="accordion-title {% if alert_marks.second_interview %}summary-alert{% endif %}">
+      2次面接
+      {% if alert_marks.second_interview %}
+      <span class="section-alert-mark">⚠</span>
+      {% endif %}
+    </summary>
+
     <div class="accordion-content">
-      <p><strong>実施予定時期：</strong>{{ candidate.second_period }}</p>
-      <p><strong>実施日：</strong>{{ candidate.second_interview_date }}</p>
+      <p class="{% if alert_marks.second_period %}field-alert{% endif %}">
+        <strong>実施予定時期：</strong>{{ candidate.second_period }}
+        {% if alert_marks.second_period %}
+        <span class="field-alert-mark">⚠ 要確認</span>
+        {% endif %}
+      </p>
+
+      <p class="{% if alert_marks.second_interview_date %}field-alert{% endif %}">
+        <strong>実施日：</strong>{{ candidate.second_interview_date }}
+        {% if alert_marks.second_interview_date %}
+        <span class="field-alert-mark">⚠ 未入力</span>
+        {% endif %}
+      </p>
+
       <p><strong>担当者：</strong>{{ candidate.second_interviewer }}</p>
       <p><strong>座談会：</strong>{{ candidate.first_meeting }}</p>
       <p><strong>TEL：</strong>{{ candidate.second_tel }}</p>
@@ -73,27 +111,68 @@
     </div>
   </details>
 
-  <details class="accordion">
-    <summary class="accordion-title">最終面接</summary>
+  <!-- 最終面接 -->
+  <details class="accordion {% if alert_marks.final_interview %}accordion-alert{% endif %}" {% if
+    alert_marks.final_interview %}open{% endif %}>
+    <summary class="accordion-title {% if alert_marks.final_interview %}summary-alert{% endif %}">
+      最終面接
+      {% if alert_marks.final_interview %}
+      <span class="section-alert-mark">⚠</span>
+      {% endif %}
+    </summary>
+
     <div class="accordion-content">
-      <p><strong>実施予定時期：</strong>{{ candidate.final_period }}</p>
-      <p><strong>実施日：</strong>{{ candidate.final_interview_date }}</p>
+      <p class="{% if alert_marks.final_period %}field-alert{% endif %}">
+        <strong>実施予定時期：</strong>{{ candidate.final_period }}
+        {% if alert_marks.final_period %}
+        <span class="field-alert-mark">⚠ 要確認</span>
+        {% endif %}
+      </p>
+
+      <p class="{% if alert_marks.final_interview_date %}field-alert{% endif %}">
+        <strong>実施日：</strong>{{ candidate.final_interview_date }}
+        {% if alert_marks.final_interview_date %}
+        <span class="field-alert-mark">⚠ 要確認</span>
+        {% endif %}
+      </p>
+
       <p><strong>担当者：</strong>{{ candidate.final_interview }}</p>
       <p><strong>成績証明：</strong>{{ candidate.transcript }}</p>
     </div>
   </details>
 
-  <details class="accordion">
-    <summary class="accordion-title">内定</summary>
-    <div class="accordion-content">
+  <!-- 内定 -->
+  <details class="accordion {% if alert_marks.offer %}accordion-alert{% endif %}" {% if alert_marks.offer %}open{% endif
+    %}>
+    <summary class="accordion-title {% if alert_marks.offer %}summary-alert{% endif %}">
+      内定
+      {% if alert_marks.offer %}
+      <span class="section-alert-mark">⚠</span>
+      {% endif %}
+    </summary>
 
-      <p><strong>懇親会予定時期：</strong>{{ candidate.pizza_party_plan }}</p>
+    <div class="accordion-content">
+      <p class="{% if alert_marks.pizza_party_plan %}field-alert{% endif %}">
+        <strong>懇親会予定時期：</strong>{{ candidate.pizza_party_plan }}
+        {% if alert_marks.pizza_party_plan %}
+        <span class="field-alert-mark">⚠ 要確認</span>
+        {% endif %}
+      </p>
+
       <p><strong>懇親会参加：</strong>{{ candidate.pizza_party_join }}</p>
       <p><strong>承諾目安：</strong>{{ candidate.acceptance_estimate }}</p>
-      <p><strong>承諾期限：</strong>{{ candidate.offer_deadline }}</p>
+
+      <p class="{% if alert_marks.offer_deadline %}field-alert{% endif %}">
+        <strong>承諾期限：</strong>{{ candidate.offer_deadline }}
+        {% if alert_marks.offer_deadline %}
+        <span class="field-alert-mark">⚠ 要確認</span>
+        {% endif %}
+      </p>
     </div>
   </details>
+
 </div>
+
 <a class="btn" href="{{ url_for('index') }}">一覧に戻る</a>
 
 {% endblock %}
