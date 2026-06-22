@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<h2>選考外一覧</h2>
+
+{% if candidate %}
+
+<div class="form-card">
+
+  <h3>基本情報</h3>
+
+  <p><strong>ID：</strong>{{ candidate.id }}</p>
+  <p><strong>候補者氏名：</strong>{{ candidate.name }}</p>
+  <p><strong>担当：</strong>{{ candidate.owner }}</p>
+  <p><strong>連絡ステータス：</strong>{{ candidate.contact_status }}</p>
+  <p><strong>その他メモ：</strong>{{ candidate.contact_memo }}</p>
+
+  <hr>
+
+  <h3>初期フェーズ</h3>
+
+  <p><strong>カジュアル面談 / 説明会 担当者名：</strong>{{ candidate.casual_event_staff }}</p>
+  <p><strong>書類選考：</strong>{{ candidate.document_screening }}</p>
+
+  <hr>
+
+  <h3>1次面接</h3>
+
+  <p><strong>実施予定時期：</strong>{{ candidate.first_period }}</p>
+  <p><strong>実施日：</strong>{{ candidate.first_interview_date }}</p>
+  <p><strong>担当者：</strong>{{ candidate.first_interviewer }}</p>
+  <p><strong>リマインド：</strong>{{ candidate.first_remind }}</p>
+
+  <hr>
+
+  <h3>2次面接</h3>
+
+  <p><strong>実施予定時期：</strong>{{ candidate.second_period }}</p>
+  <p><strong>実施日：</strong>{{ candidate.second_interview_date }}</p>
+  <p><strong>担当者：</strong>{{ candidate.second_interviewer }}</p>
+  <p><strong>座談会：</strong>{{ candidate.first_meeting }}</p>
+  <p><strong>TEL：</strong>{{ candidate.second_tel }}</p>
+  <p><strong>リマインド：</strong>{{ candidate.second_remind }}</p>
+
+  <hr>
+
+  <h3>最終フェーズ</h3>
+
+  <p><strong>最終面接：</strong>{{ candidate.final_interview }}</p>
+  <p><strong>実施予定時期：</strong>{{ candidate.final_period }}</p>
+  <p><strong>実施日：</strong>{{ candidate.final_interview_date }}</p>
+  <p><strong>成績証明：</strong>{{ candidate.transcript }}</p>
+  <p><strong>懇親会予定時期：</strong>{{ candidate.pizza_party_plan }}</p>
+  <p><strong>懇親会参加：</strong>{{ candidate.pizza_party_join }}</p>
+  <p><strong>承諾目安：</strong>{{ candidate.acceptance_estimate }}</p>
+  <p><strong>承諾期限：</strong>{{ candidate.offer_deadline }}</p>
+
+  <div class="form-actions">
+    <a href="{{ url_for('edit_candidate', id=candidate.id) }}" class="btn-addpage">
+      編集画面に戻る
+    </a>
+
+    <a href="{{ url_for('index') }}" class="btn-addpage">
+      一覧に戻る
+    </a>
+  </div>
+
+</div>
+
+{% else %}
+
+<p>データが見つかりませんでした。</p>
+
+<a href="{{ url_for('index') }}" class="btn-addpage">
+  一覧に戻る
+</a>
+
+{% endif %}
+
+{% endblock %}
