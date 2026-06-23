@@ -23,6 +23,9 @@
       <label>担当</label>
       <input type="text" name="owner" value="{{ candidate.owner }}">
 
+      <label>関連URL</label>
+      <input type="text" name="profile_url" value="{{ candidate.profile_url }}">
+
       <label>連絡ステータス</label>
       <select name="contact_status" id="contactStatus">
         {% for status in ["学生返答待ち", "面接官の返答待ち", "未連絡", "保留", "お見送り", "内定承諾", "辞退", "その他"] %}
