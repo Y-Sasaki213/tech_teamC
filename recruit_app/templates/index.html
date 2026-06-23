@@ -65,7 +65,6 @@
   <tbody id="candidate-table-body">
     {% for candidate in candidates %}
     <tr 
-<tr
   class="{% if candidate.has_alert %}alert-row{% endif %}"
   data-id="{{ candidate.id }}"
   data-name="{{ candidate.name }}"
@@ -99,12 +98,6 @@
       <td>
         <a class="btn small" href="{{ url_for('detail_candidate', id=candidate.id) }}">詳細</a>
         <a class="btn small" href="{{ url_for('edit_candidate', id=candidate.id) }}">編集</a>
-
-        <form class="inline-form" action="{{ url_for('delete_candidate', id=candidate.id) }}" method="POST">
-          <button class="btn small danger" type="submit" onclick="return confirmDelete();">
-            削除
-          </button>
-        </form>
       </td>
     </tr>
     {% endfor %}

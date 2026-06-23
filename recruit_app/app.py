@@ -38,10 +38,16 @@ def index():
             p.first_period,
             p.second_period,
             p.final_period
+        
         FROM candidates c
         LEFT JOIN candidate_progress p
         ON c.id = p.candidate_id
         WHERE 1 = 1
+          AND (
+              c.contact_status IS NULL
+              OR c.contact_status NOT IN ('辞退', '修了者')
+          )
+
     """
 
     params = []
@@ -567,7 +573,7 @@ def delete_candidate(id):
     conn.commit()
     conn.close()
 
-    return redirect(url_for("index"))
+    return redirect(url_for("addpage"))
 
 # ============
 # 使い方ページ
@@ -600,22 +606,61 @@ def add_contact_memo_column():
 # ====================
 # 選考外の一覧ページ
 # ====================
-@app.route('/addpage')
-@app.route('/addpage/<int:id>')
-def addpage(id=None):
-    candidate = None
+@app.route("/addpage")
+def addpage():
+    conn = sqlite3.connect("recruit.db")
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
 
-    if id is not None:
-        conn = sqlite3.connect('recruit.db')
-        conn.row_factory = sqlite3.Row
-        cur = conn.cursor()
+    # 辞退の候補者だけ取得
+    cur.execute("""
+        SELECT *
+        FROM candidates
+        WHERE contact_status = '辞退'
+        ORDER BY updated_at DESC
+    """)
+    decline_candidates = cur.fetchall()
 
-        cur.execute('SELECT * FROM candidates WHERE id = ?', (id,))
-        candidate = cur.fetchone()
+    # 修了者の候補者だけ取得
+    cur.execute("""
+        SELECT *
+        FROM candidates
+        WHERE contact_status = '修了者'
+        ORDER BY updated_at DESC
+    """)
+    completed_candidates = cur.fetchall()
 
-        conn.close()
+    conn.close()
 
-    return render_template('addpage.html', candidate=candidate)
+    return render_template(
+        "addpage.html",
+        decline_candidates=decline_candidates,
+        completed_candidates=completed_candidates
+    )
+
+# 選考外ページへの移動
+
+@app.route("/move_to_outside/<int:id>", methods=["POST"])
+def move_to_outside(id):
+    outside_status = request.form.get("outside_status")
+
+    if outside_status == "":
+        return "選考外ステータスを選択してください"
+
+    conn = sqlite3.connect("recruit.db")
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE candidates
+        SET contact_status = ?
+        WHERE id = ?
+    """, (outside_status, id))
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for("addpage"))
 
 
 # =========================
@@ -631,5 +676,4 @@ if __name__ == "__main__":
 
 
   app.run(debug=True)
-
 
