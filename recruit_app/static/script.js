@@ -2,6 +2,72 @@ function confirmDelete() {
   return confirm("本当に削除しますか？");
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+  const sortKeySelect = document.getElementById("sort-key");
+  const sortOrderSelect = document.getElementById("sort-order");
+  const tableBody = document.getElementById("candidate-table-body");
+
+  // 並び替えUIがない画面では何もしない
+  if (!sortKeySelect || !sortOrderSelect || !tableBody) {
+    return;
+  }
+
+  function parseDateValue(value) {
+    if (!value) {
+      return 0;
+    }
+
+    const parsed = Date.parse(value);
+    return isNaN(parsed) ? 0 : parsed;
+  }
+
+  function compareText(a, b) {
+    return a.localeCompare(b, "ja");
+  }
+
+  function sortRows() {
+    const sortKey = sortKeySelect.value;
+    const sortOrder = sortOrderSelect.value;
+    const rows = Array.from(tableBody.querySelectorAll("tr"));
+
+    rows.sort(function (rowA, rowB) {
+      let valueA;
+      let valueB;
+      let result = 0;
+
+      if (sortKey === "id") {
+        valueA = Number(rowA.dataset.id || 0);
+        valueB = Number(rowB.dataset.id || 0);
+        result = valueA - valueB;
+      } else if (sortKey === "updated_at") {
+        valueA = parseDateValue(rowA.dataset.updatedAt);
+        valueB = parseDateValue(rowB.dataset.updatedAt);
+        result = valueA - valueB;
+      } else if (sortKey === "owner") {
+        valueA = (rowA.dataset.owner || "").trim();
+        valueB = (rowB.dataset.owner || "").trim();
+        result = compareText(valueA, valueB);
+      } else {
+        valueA = (rowA.dataset.name || "").trim();
+        valueB = (rowB.dataset.name || "").trim();
+        result = compareText(valueA, valueB);
+      }
+
+      return sortOrder === "asc" ? result : -result;
+    });
+
+    rows.forEach(function (row) {
+      tableBody.appendChild(row);
+    });
+  }
+
+  // セレクト変更で自動反映
+  sortKeySelect.addEventListener("change", sortRows);
+  sortOrderSelect.addEventListener("change", sortRows);
+
+  // 初期表示時にも現在の選択内容で反映
+  sortRows();
+});
 //function confirmDelete() {
 //return confirm("本当に削除しますか？");
 //}

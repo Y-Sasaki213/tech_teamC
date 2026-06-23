@@ -18,6 +18,32 @@
   <button type="submit" class="btn small">検索</button>
 </form>
 
+
+<div class="sort-form">
+  <div class="sort-group">
+    <label for="sort-key">並び替え</label>
+    <select id="sort-key">
+      <option value="name">名前順</option>
+      <option value="id">登録順</option>
+      <option value="owner">採用担当順</option>
+      <option value="updated_at">アクション更新順</option>
+    </select>
+  </div>
+
+  <div class="sort-group">
+    <label for="sort-order">順序</label>
+    <select id="sort-order">
+      <option value="asc">昇順</option>
+      <option value="desc">降順</option>
+    </select>
+  </div>
+
+  <!-- <button type="button" id="sort-apply-btn" class="btn small">
+    並び替え
+  </button> -->
+</div>
+
+
 {% if candidates|length == 0 %}
 <p>まだ候補者が登録されていません。</p>
 {% else %}
@@ -36,9 +62,16 @@
     </tr>
   </thead>
 
-  <tbody>
+  <tbody id="candidate-table-body">
     {% for candidate in candidates %}
-    <tr class="{% if candidate.has_alert %}alert-row{% endif %}">
+    <tr 
+<tr
+  class="{% if candidate.has_alert %}alert-row{% endif %}"
+  data-id="{{ candidate.id }}"
+  data-name="{{ candidate.name }}"
+  data-owner="{{ candidate.owner or '' }}"
+  data-updated-at="{{ candidate.updated_at or '' }}" 
+>
       <td>{{ candidate.id }}</td>
       <td>{{ candidate.name }}</td>
       <td>{{ candidate.owner }}</td>
