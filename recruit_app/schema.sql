@@ -32,7 +32,8 @@ CREATE TABLE candidate_progress (
     second_remind TEXT DEFAULT '未済',
     transcript TEXT DEFAULT '未済',
     second_period TEXT,
-
+    final_period TEXT,
+    final_interview_date TEXT,
     final_interview TEXT,
     pizza_party_plan TEXT,
     pizza_party_join TEXT,

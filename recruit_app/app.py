@@ -30,11 +30,13 @@ def index():
             c.last_updated_field,
             p.first_interview_date,
             p.second_interview_date,
+            p.final_interview_date,
             p.final_interview,
             p.pizza_party_plan,
             p.offer_deadline,
             p.first_period,
-            p.second_period
+            p.second_period,
+            p.final_period
         FROM candidates c
         LEFT JOIN candidate_progress p
         ON c.id = p.candidate_id
@@ -92,7 +94,7 @@ def index():
             next_selection_date = candidate_dict.get("second_interview_date")
 
         elif current_phase == "二次面接":
-            next_selection_date = candidate_dict.get("final_interview")
+            next_selection_date = candidate_dict.get("final_interview_date")
 
         elif current_phase == "最終面接":
             next_selection_date = candidate_dict.get("pizza_party_plan")
@@ -162,7 +164,8 @@ def create_candidate():
     second_remind = request.form.get("second_remind")
     transcript = request.form.get("transcript")
     second_period = request.form.get("second_period")
-
+    final_period = request.form.get("final_period")
+    final_interview_date = request.form.get("final_interview_date")
     final_interview = request.form.get("final_interview")
     pizza_party_plan = request.form.get("pizza_party_plan")
     pizza_party_join = request.form.get("pizza_party_join")
@@ -186,8 +189,8 @@ def create_candidate():
             updated_at,
             last_updated_field
         )
-           VALUES (?, ?, ?, ?, 
-                   CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)
+        VALUES (?, ?, ?, ?, 
+                CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)
     """, (name, owner, contact_status, contact_memo, "新規登録"))
 
 
@@ -213,35 +216,39 @@ def create_candidate():
             second_remind,
             transcript,
             second_period,
+            final_interview_date,
+            final_period,
             final_interview,
             pizza_party_plan,
             pizza_party_join,
             acceptance_estimate,
             offer_deadline
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?)
     """, (
-        candidate_id,
-        casual_event_staff,
-        document_screening,
-        initial_remind,
-        first_interview_date,
-        first_interviewer,
-        first_meeting,
-        first_tel,
-        first_remind,
-        first_period,
-        second_interview_date,
-        second_interviewer,
-        second_tel,
-        second_remind,
-        transcript,
-        second_period,
-        final_interview,
-        pizza_party_plan,
-        pizza_party_join,
-        acceptance_estimate,
-        offer_deadline
+            candidate_id,
+            casual_event_staff,
+            document_screening,
+            initial_remind,
+            first_interview_date,
+            first_interviewer,
+            first_meeting,
+            first_tel,
+            first_remind,
+            first_period,
+            second_interview_date,
+            second_interviewer,
+            second_tel,
+            second_remind,
+            transcript,
+            second_period,
+            final_interview_date,
+            final_period,
+            final_interview,
+            pizza_party_plan,
+            pizza_party_join,
+            acceptance_estimate,
+            offer_deadline
     ))
 
     conn.commit()
@@ -427,7 +434,8 @@ def update_candidate(id):
     second_remind = request.form.get("second_remind")
     transcript = request.form.get("transcript")
     second_period = request.form.get("second_period")
-
+    final_period = request.form.get("final_period")
+    final_interview_date = request.form.get("final_interview_date")
     final_interview = request.form.get("final_interview")
     pizza_party_plan = request.form.get("pizza_party_plan")
     pizza_party_join = request.form.get("pizza_party_join")
@@ -462,7 +470,7 @@ def update_candidate(id):
     elif old_data["second_interview_date"] != second_interview_date:
         last_updated_field = "二次面接"
 
-    elif old_data["final_interview"] != final_interview:
+    elif old_data["final_interview_date"] != final_interview_date:
         last_updated_field = "最終面接"
 
     elif old_data["offer_deadline"] != offer_deadline:
@@ -500,7 +508,9 @@ def update_candidate(id):
             second_remind = ?,
             transcript = ?,
             second_period = ?,
+            final_period = ?,
             final_interview = ?,
+            final_interview_date = ?,
             pizza_party_plan = ?,
             pizza_party_join = ?,
             acceptance_estimate = ?,
@@ -522,7 +532,9 @@ def update_candidate(id):
         second_remind,
         transcript,
         second_period,
+        final_period,
         final_interview,
+        final_interview_date,
         pizza_party_plan,
         pizza_party_join,
         acceptance_estimate,
