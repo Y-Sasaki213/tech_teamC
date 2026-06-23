@@ -39,14 +39,16 @@ def index():
             p.second_period,
             p.final_period
         
+        
         FROM candidates c
         LEFT JOIN candidate_progress p
         ON c.id = p.candidate_id
         WHERE 1 = 1
           AND (
               c.contact_status IS NULL
-              OR c.contact_status NOT IN ('辞退', '修了者')
-          )
+              OR c.contact_status = ''
+              OR c.contact_status NOT IN ('内定承諾', '辞退', 'お見送り', 'ミス')
+
 
     """
 
