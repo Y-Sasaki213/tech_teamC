@@ -24,6 +24,7 @@ def index():
             c.id,
             c.name,
             c.owner,
+            c.profile_url,
             c.contact_status,
             c.created_at,
             c.updated_at,
@@ -144,6 +145,7 @@ def new_candidate():
 def create_candidate():
     name = request.form.get("name")
     owner = request.form.get("owner")
+    profile_url = request.form.get("profile_url")
     contact_status = request.form.get("contact_status")
     contact_memo = request.form.get("contact_memo")
 
@@ -183,15 +185,16 @@ def create_candidate():
         INSERT INTO candidates (
             name,
             owner,
+            profile_url,
             contact_status,
             contact_memo,
             created_at,
             updated_at,
             last_updated_field
         )
-        VALUES (?, ?, ?, ?, 
+        VALUES (?, ?, ?, ?, ?,
                 CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)
-    """, (name, owner, contact_status, contact_memo, "新規登録"))
+    """, (name, owner, profile_url,contact_status, contact_memo, "新規登録"))
 
 
     # 直前に登録した候補者IDを取得
@@ -347,6 +350,7 @@ def detail_candidate(id):
             c.id AS candidate_id,
             c.name,
             c.owner,
+            c.profile_url,
             c.contact_status,
             c.contact_memo,
             c.created_at,
@@ -388,6 +392,7 @@ def edit_candidate(id):
             c.id AS candidate_id,
             c.name,
             c.owner,
+            c.profile_url,
             c.contact_status,
             c.contact_memo,
             c.created_at,
@@ -415,6 +420,7 @@ def edit_candidate(id):
 def update_candidate(id):
     name = request.form.get("name")
     owner = request.form.get("owner")
+    profile_url = request.form.get("profile_url")
     contact_status = request.form.get("contact_status")
     contact_memo = request.form.get("contact_memo")
     casual_event_staff = request.form.get("casual_event_staff")
@@ -482,12 +488,13 @@ def update_candidate(id):
         SET
             name = ?,
             owner = ?,
+            profile_url = ?,
             contact_status = ?,
             contact_memo = ?,
             updated_at = CURRENT_TIMESTAMP,
             last_updated_field = ?
         WHERE id = ?
-    """, (name, owner, contact_status, contact_memo, last_updated_field, id))
+    """, (name, owner,profile_url, contact_status, contact_memo, last_updated_field, id))
 
     # candidate_progressテーブルを更新
     cursor.execute("""

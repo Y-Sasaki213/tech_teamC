@@ -31,7 +31,16 @@
 
       <p><strong>氏名：</strong>{{ candidate.name }}</p>
       <p><strong>担当：</strong>{{ candidate.owner }}</p>
-
+      <p>
+        <strong>関連URL：</strong>
+        {% if candidate.profile_url %}
+        <a href="{{ candidate.profile_url }}" target="_blank">
+          {{ candidate.profile_url }}
+        </a>
+        {% else %}
+        未登録
+        {% endif %}
+      </p>
       <p><strong>連絡ステータス：</strong>{{ candidate.contact_status }}</p>
       {% if candidate.contact_status == "その他" %}
       <p><strong>その他メモ：</strong>{{ candidate.contact_memo or "-" }}</p>

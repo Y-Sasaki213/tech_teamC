@@ -5,6 +5,7 @@ CREATE TABLE candidates (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     owner TEXT,
+    profile_url TEXT,
     contact_status TEXT NOT NULL DEFAULT '未連絡',
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
