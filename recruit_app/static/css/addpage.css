@@ -1,0 +1,26 @@
+.candidate-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+.candidate-table th {
+  text-align: left;
+  padding: 18px 24px;
+  background-color: #f5f6f8;
+  font-weight: bold;
+}
+
+.candidate-table td {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background-color: #eaf1ff;
+  color: #1d4ed8;
+  font-weight: bold;
+}

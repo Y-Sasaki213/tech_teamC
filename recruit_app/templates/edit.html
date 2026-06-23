@@ -169,10 +169,24 @@
     </div>
   </details>
 
-  <a href="{{ url_for('addpage', id=candidate.id) }}" class="btn-addpage">
-    選考外一覧に移動
-  </a>
-  <button class="btn primary" type="submit">更新する</button>
+  <label>選考外ステータス</label>
+<select name="outside_status">
+  <option value="">選択してください</option>
+  <option value="辞退">辞退</option>
+  <option value="修了者">修了者</option>
+</select>
+
+<button
+  class="btn-addpage"
+  type="submit"
+  formaction="{{ url_for('move_to_outside', id=candidate.id) }}"
+  formmethod="POST">
+  選考外一覧に移動
+</button>
+
+<button class="btn primary" type="submit">
+  更新する
+</button>
 
 </form>
 
