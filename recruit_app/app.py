@@ -48,6 +48,7 @@ def index():
               c.contact_status IS NULL
               OR c.contact_status = ''
               OR c.contact_status NOT IN ('内定承諾', '辞退', 'お見送り', 'ミス')
+              )
 
 
     """
