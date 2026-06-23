@@ -6,6 +6,55 @@
 <h2>選考外一覧</h2>
 
 <!-- =========================
+     内定承諾 一覧
+========================= -->
+<h3>内定承諾</h3>
+
+{% if completed_candidates %}
+
+<table class="candidate-table">
+  <thead>
+    <tr>
+      <th>氏名</th>
+      <th>担当</th>
+      <th>連絡ステータス</th>
+      <th>選考フェーズ</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for candidate in completed_candidates %}
+    <tr>
+  <td>{{ candidate.name }}</td>
+  <td>{{ candidate.owner }}</td>
+  <td>
+    <span class="status-badge">
+      {{ candidate.contact_status }}
+    </span>
+  </td>
+  <td>{{ candidate.updated_at or "-" }}</td>
+      <td>
+        <a class="btn small" href="{{ url_for('detail_candidate', id=candidate.id) }}">詳細</a>
+        <a class="btn small" href="{{ url_for('edit_candidate', id=candidate.id) }}">編集</a>
+
+    <form class="inline-form" action="{{ url_for('delete_candidate', id=candidate.id) }}" method="POST">
+      <button class="btn small danger" type="submit" onclick="return confirmDelete();">
+        削除
+      </button>
+    </form>
+  </td>
+</tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% else %}
+  <p>内定承諾の候補者はいません。</p>
+{% endif %}
+
+
+<!-- =========================
      辞退 一覧
 ========================= -->
 <h3>辞退</h3>
@@ -35,6 +84,9 @@
   </td>
   <td>{{ candidate.updated_at or "-" }}</td>
   <td>
+        <a class="btn small" href="{{ url_for('detail_candidate', id=candidate.id) }}">詳細</a>
+        <a class="btn small" href="{{ url_for('edit_candidate', id=candidate.id) }}">編集</a>
+      
     <form class="inline-form" action="{{ url_for('delete_candidate', id=candidate.id) }}" method="POST">
       <button class="btn small danger" type="submit" onclick="return confirmDelete();">
         削除
@@ -50,27 +102,26 @@
   <p>辞退の候補者はいません。</p>
 {% endif %}
 
-
 <!-- =========================
-     修了者 一覧
+     お見送り 一覧
 ========================= -->
-<h3>修了者</h3>
+<h3>お見送り</h3>
 
-{% if completed_candidates %}
+{% if seeing_candidates %}
 
 <table class="candidate-table">
   <thead>
     <tr>
       <th>氏名</th>
       <th>担当</th>
-      <th>連絡ステータス</th>
-      <th>選考フェーズ</th>
+      <th>選考外ステータス</th>
+      <th>最終更新日</th>
       <th>操作</th>
     </tr>
   </thead>
 
   <tbody>
-    {% for candidate in completed_candidates %}
+    {% for candidate in seeing_candidates %}
     <tr>
   <td>{{ candidate.name }}</td>
   <td>{{ candidate.owner }}</td>
@@ -81,6 +132,9 @@
   </td>
   <td>{{ candidate.updated_at or "-" }}</td>
   <td>
+        <a class="btn small" href="{{ url_for('detail_candidate', id=candidate.id) }}">詳細</a>
+        <a class="btn small" href="{{ url_for('edit_candidate', id=candidate.id) }}">編集</a>
+      
     <form class="inline-form" action="{{ url_for('delete_candidate', id=candidate.id) }}" method="POST">
       <button class="btn small danger" type="submit" onclick="return confirmDelete();">
         削除
@@ -93,7 +147,56 @@
 </table>
 
 {% else %}
-  <p>修了者の候補者はいません。</p>
+  <p>お見送りの候補者はいません。</p>
 {% endif %}
+
+<!-- =========================
+     ミス 一覧
+========================= -->
+<h3>ミス</h3>
+
+{% if miss_candidates %}
+
+<table class="candidate-table">
+  <thead>
+    <tr>
+      <th>氏名</th>
+      <th>担当</th>
+      <th>選考外ステータス</th>
+      <th>最終更新日</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for candidate in miss_candidates %}
+    <tr>
+  <td>{{ candidate.name }}</td>
+  <td>{{ candidate.owner }}</td>
+  <td>
+    <span class="status-badge">
+      {{ candidate.contact_status }}
+    </span>
+  </td>
+  <td>{{ candidate.updated_at or "-" }}</td>
+  <td>
+        <a class="btn small" href="{{ url_for('detail_candidate', id=candidate.id) }}">詳細</a>
+        <a class="btn small" href="{{ url_for('edit_candidate', id=candidate.id) }}">編集</a>
+      
+    <form class="inline-form" action="{{ url_for('delete_candidate', id=candidate.id) }}" method="POST">
+      <button class="btn small danger" type="submit" onclick="return confirmDelete();">
+        削除
+      </button>
+    </form>
+  </td>
+</tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% else %}
+  <p>ミスの候補者はいません。</p>
+{% endif %}
+
 
 {% endblock %}

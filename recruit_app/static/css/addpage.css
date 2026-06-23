@@ -24,3 +24,11 @@
   color: #1d4ed8;
   font-weight: bold;
 }
+.inline-form {
+  display: inline-block;
+  margin: 0;
+}
+
+.candidate-table td .btn {
+  margin-right: 6px;
+}

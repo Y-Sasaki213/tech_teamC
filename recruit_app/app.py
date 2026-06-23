@@ -612,6 +612,15 @@ def addpage():
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
+    # 内定承諾の候補者だけ取得
+    cur.execute("""
+        SELECT *
+        FROM candidates
+        WHERE contact_status = '内定承諾'
+        ORDER BY updated_at DESC
+    """)
+    completed_candidates = cur.fetchall()
+
     # 辞退の候補者だけ取得
     cur.execute("""
         SELECT *
@@ -621,22 +630,36 @@ def addpage():
     """)
     decline_candidates = cur.fetchall()
 
-    # 修了者の候補者だけ取得
+     # お見送りの候補者だけ取得
     cur.execute("""
         SELECT *
         FROM candidates
-        WHERE contact_status = '修了者'
+        WHERE contact_status = 'お見送り'
         ORDER BY updated_at DESC
     """)
-    completed_candidates = cur.fetchall()
+    seeing_candidates = cur.fetchall()
+
+     # ミスの候補者だけ取得
+    cur.execute("""
+        SELECT *
+        FROM candidates
+        WHERE contact_status = 'ミス'
+        ORDER BY updated_at DESC
+    """)
+    miss_candidates = cur.fetchall()
+
 
     conn.close()
 
+   
     return render_template(
         "addpage.html",
+        completed_candidates=completed_candidates,
         decline_candidates=decline_candidates,
-        completed_candidates=completed_candidates
+        seeing_candidates=seeing_candidates,
+        miss_candidates=miss_candidates
     )
+
 
 # 選考外ページへの移動
 
