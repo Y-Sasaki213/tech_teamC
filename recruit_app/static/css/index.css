@@ -493,3 +493,27 @@ body {
     width: auto;
   }
 }
+
+.sort-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 16px 0 20px;
+}
+
+.sort-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sort-group label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sort-group select {
+  min-width: 160px;
+  padding: 8px 10px;
+}
