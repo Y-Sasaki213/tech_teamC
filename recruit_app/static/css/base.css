@@ -3,12 +3,12 @@
 body {
   margin: 0;
   font-family: "Helvetica Neue", Arial, sans-serif;
-  background-color: #f0f3e5;
+  background-color: #FBF5DD;
   color: #333;
 }
 
 .header {
-  background-color: #1f3724;
+  background-color: #0D530E;
   color: rgb(255, 255, 255);
   padding: 16px 32px;
   display: flex;
@@ -93,4 +93,21 @@ select {
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 15px;
+}
+
+
+.btn-addpage {
+  margin-top: 14px;
+  display: inline-block;
+  border: none;
+  text-decoration: none;
+  background-color: #e5e7eb;
+  color: #111827;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s ease;
+  background-color: #e05c5c;
+  color: white;
 }
