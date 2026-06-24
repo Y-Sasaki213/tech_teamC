@@ -1,6 +1,5 @@
 /* ===== 詳細ページ ===== */
 .accordion-grid {
-  display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
   align-items: start;
@@ -24,13 +23,13 @@
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  background-color: #f4f6f8;
+  background-color: #f7f8f4;
   color: #333;
   list-style: none;
 }
 
 .accordion-title:hover {
-  background-color: #eaf1f8;
+  background-color: #ebf8ea;
 }
 
 .accordion-content {
@@ -42,8 +41,8 @@
 }
 
 .accordion[open] .accordion-title {
-  background-color: #dceeff;
-  color: #0056b3;
+  background-color: #afdbb6;
+  color: #000000;
 }
 
 .alert-box {
@@ -68,4 +67,18 @@
   margin-top: 0;
   border-bottom: 2px solid #e5e7eb;
   padding-bottom: 8px;
+}
+
+.page-title-area{
+  margin-bottom: 20px;
+}
+.form-card {
+  background-color: rgb(255, 252, 252);
+  padding: 24px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.btn{
+  margin-top: 20px;
 }
