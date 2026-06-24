@@ -31,30 +31,39 @@ document.addEventListener("DOMContentLoaded", function () {
     const rows = Array.from(tableBody.querySelectorAll("tr"));
 
     rows.sort(function (rowA, rowB) {
-      let valueA;
-      let valueB;
-      let result = 0;
+  // アラート優先
+  const alertA = Number(rowA.dataset.hasAlert || 0);
+  const alertB = Number(rowB.dataset.hasAlert || 0);
 
-      if (sortKey === "id") {
-        valueA = Number(rowA.dataset.id || 0);
-        valueB = Number(rowB.dataset.id || 0);
-        result = valueA - valueB;
-      } else if (sortKey === "updated_at") {
-        valueA = parseDateValue(rowA.dataset.updatedAt);
-        valueB = parseDateValue(rowB.dataset.updatedAt);
-        result = valueA - valueB;
-      } else if (sortKey === "owner") {
-        valueA = (rowA.dataset.owner || "").trim();
-        valueB = (rowB.dataset.owner || "").trim();
-        result = compareText(valueA, valueB);
-      } else {
-        valueA = (rowA.dataset.name || "").trim();
-        valueB = (rowB.dataset.name || "").trim();
-        result = compareText(valueA, valueB);
-      }
+  if (alertA !== alertB) {
+    return alertB - alertA;
+  }
 
-      return sortOrder === "asc" ? result : -result;
-    });
+  let valueA;
+  let valueB;
+  let result = 0;
+
+  if (sortKey === "id") {
+    valueA = Number(rowA.dataset.id || 0);
+    valueB = Number(rowB.dataset.id || 0);
+    result = valueA - valueB;
+  } else if (sortKey === "updated_at") {
+    valueA = parseDateValue(rowA.dataset.updatedAt);
+    valueB = parseDateValue(rowB.dataset.updatedAt);
+    result = valueA - valueB;
+  } else if (sortKey === "owner") {
+    valueA = (rowA.dataset.owner || "").trim();
+    valueB = (rowB.dataset.owner || "").trim();
+    result = compareText(valueA, valueB);
+  } else {
+    valueA = (rowA.dataset.name || "").trim();
+    valueB = (rowB.dataset.name || "").trim();
+    result = compareText(valueA, valueB);
+  }
+
+  return sortOrder === "asc" ? result : -result;
+  });
+
 
     rows.forEach(function (row) {
       tableBody.appendChild(row);
