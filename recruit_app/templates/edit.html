@@ -28,7 +28,7 @@
 
       <label>連絡ステータス</label>
       <select name="contact_status" id="contactStatus">
-        {% for status in ["学生返答待ち", "面接官の返答待ち", "未連絡", "保留", "お見送り", "内定承諾", "辞退", "その他"] %}
+        {% for status in ["学生返答待ち", "面接官の返答待ち", "未連絡", "保留", "その他"] %}
         <option value="{{ status }}" {% if candidate.contact_status==status %}selected{% endif %}>
           {{ status }}
         </option>
@@ -103,7 +103,7 @@
       <input type="text" name="second_interviewer" value="{{ candidate.second_interviewer }}">
 
       <label>座談会</label>
-      <input type="text" name="first_meeting" value="{{ candidate.first_meeting }}">
+      <input type="date" name="first_meeting" value="{{ candidate.first_meeting }}">
 
       <label>TEL</label>
       <select name="second_tel">
@@ -169,6 +169,10 @@
     </div>
   </details>
 
+  <button class="btn primary" type="submit">
+  更新する
+</button>
+
   <label>選考外ステータス</label>
 <select name="outside_status">
   <option value="">選択してください</option>
@@ -183,12 +187,10 @@
   type="submit"
   formaction="{{ url_for('move_to_outside', id=candidate.id) }}"
   formmethod="POST">
-  選考外一覧に移動
+  選考外に登録
 </button>
 
-<button class="btn primary" type="submit">
-  更新する
-</button>
+
 
 </form>
 
