@@ -7,6 +7,7 @@ CREATE TABLE candidates (
     owner TEXT,
     profile_url TEXT,
     contact_status TEXT NOT NULL DEFAULT '未連絡',
+    contact_memo TEXT,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_updated_field TEXT DEFAULT '新規登録'

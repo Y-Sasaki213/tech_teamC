@@ -4,6 +4,8 @@ from db import get_db_connection, init_db
 from alerts import get_candidate_alerts, get_popup_alerts
 
 import sqlite3
+import os
+
 
 app = Flask(__name__)
 
@@ -692,14 +694,13 @@ def move_to_outside(id):
 # =========================
 # アプリ起動
 # =========================
-add_contact_memo_column()
+#add_contact_memo_column()
+
 
 if __name__ == "__main__":
-    # 初回DB作成時だけ使う場合は、下のコメントを外す
-    # init_db()
+    if not os.path.exists("recruit.db"):
+        init_db()   
 
-  conn = get_db_connection()
+    app.run(debug=True)
 
-
-  app.run(debug=True)
 

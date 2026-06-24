@@ -24,6 +24,7 @@ def get_db_connection():
     print("使用中のDB:", DB_NAME)  # デバッグ用
     conn = sqlite3.connect(DB_NAME)
     conn.row_factory = sqlite3.Row
+    print("使用中のDB:", DB_NAME)
     return conn
 
 
