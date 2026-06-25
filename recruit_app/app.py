@@ -40,8 +40,6 @@ def index():
             p.first_period,
             p.second_period,
             p.final_period
-        
-        
         FROM candidates c
         LEFT JOIN candidate_progress p
         ON c.id = p.candidate_id
@@ -50,9 +48,7 @@ def index():
               c.contact_status IS NULL
               OR c.contact_status = ''
               OR c.contact_status NOT IN ('内定承諾', '辞退', 'お見送り', 'ミス')
-              )
-
-
+          )
     """
 
     params = []
@@ -86,46 +82,41 @@ def index():
     for candidate in candidates:
         candidate_dict = dict(candidate)
 
+        # -------------------------------
+        # ✅ 空文字対策（重要）
+        # -------------------------------
+        for key in [
+            "first_interview_date",
+            "second_interview_date",
+            "final_interview_date",
+            "first_period",
+            "second_period",
+            "final_period",
+            "pizza_party_plan",
+            "offer_deadline"
+        ]:
+            if candidate_dict.get(key) == "":
+                candidate_dict[key] = None
+
         # =========================
-        # 次回選考日を判定する処理
+        # ✅ 次回選考日（完全修正版）
         # =========================
-        current_phase = candidate_dict.get("last_updated_field")
-
-        next_selection_date = ""
-
-        if current_phase == "新規登録":
-            next_selection_date = (
-                candidate_dict.get("first_interview_date")
-                or candidate_dict.get("first_period")
-            )
-
-        elif current_phase in ["カジュアル面談/説明会", "書類選考"]:
-            next_selection_date = (
-                candidate_dict.get("first_interview_date")
-                or candidate_dict.get("first_period")
-            )
-
-        elif current_phase == "一次面接":
-            next_selection_date = (
-                candidate_dict.get("second_interview_date")
-                or candidate_dict.get("second_period")
-            )
-
-        elif current_phase == "二次面接":
-            next_selection_date = (
-                candidate_dict.get("final_interview_date")
-                or candidate_dict.get("final_period")
-            )
-
-        elif current_phase == "最終面接":
-            next_selection_date = candidate_dict.get("pizza_party_plan")
-
-        elif current_phase == "内定":
-            next_selection_date = candidate_dict.get("offer_deadline")
+        next_selection_date = (
+            candidate_dict.get("first_interview_date")
+            or candidate_dict.get("second_interview_date")
+            or candidate_dict.get("final_interview_date")
+            or candidate_dict.get("first_period")
+            or candidate_dict.get("second_period")
+            or candidate_dict.get("final_period")
+            or candidate_dict.get("pizza_party_plan")
+            or candidate_dict.get("offer_deadline")
+        )
 
         candidate_dict["next_selection_date"] = next_selection_date or "-"
 
-
+        # =========================
+        # アラート
+        # =========================
         alerts = get_candidate_alerts(candidate_dict)
         candidate_dict["alerts"] = alerts
         candidate_dict["has_alert"] = len(alerts) > 0
@@ -133,7 +124,7 @@ def index():
 
         candidate_list.append(candidate_dict)
 
-    # アラートありの候補者を上に出しつつ、担当者名順に並べる
+    # ✅ アラート優先＋担当者＋名前順
     candidate_list.sort(
         key=lambda x: (
             not x["has_alert"],
@@ -202,6 +193,42 @@ def create_candidate():
 
     # candidatesテーブルに基本情報を登録
     
+    
+    
+    def normalize(value):
+        return value if value and str(value).strip() != "" else None
+
+    # 正規化（ここが重要）
+    first_interview_date = normalize(first_interview_date)
+    second_interview_date = normalize(second_interview_date)
+    final_interview_date = normalize(final_interview_date)
+
+
+    first_period = first_period 
+    second_period = second_period 
+    final_period = final_period 
+
+    # フェーズ判定（重要：periodも含める）
+    if final_interview_date or final_period:
+        last_updated_field = "最終面接"
+
+    elif second_interview_date or second_period:
+        last_updated_field = "二次面接"
+
+    elif first_interview_date or first_period:
+        last_updated_field = "一次面接"
+
+    elif document_screening == "済":
+        last_updated_field = "書類選考"
+
+    elif casual_event_staff:
+        last_updated_field = "カジュアル面談/説明会"
+
+    else:
+        last_updated_field = "新規登録"
+
+
+    # INSERT
     cursor.execute("""
         INSERT INTO candidates (
             name,
@@ -215,7 +242,9 @@ def create_candidate():
         )
         VALUES (?, ?, ?, ?, ?,
                 CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?)
-    """, (name, owner, profile_url,contact_status, contact_memo, "新規登録"))
+    """, (name, owner, profile_url, contact_status, contact_memo, last_updated_field))
+
+    
 
 
     # 直前に登録した候補者IDを取得
@@ -479,14 +508,29 @@ def update_candidate(id):
     WHERE candidate_id = ?
 """, (id,)).fetchone()
 
-    # フェーズを現在の状態から判定
-    if final_interview_date:
+    
+    
+    def normalize(value):
+        return value if value and str(value).strip() != "" else None
+
+    # 正規化（ここが重要）
+    first_interview_date = normalize(first_interview_date)
+    second_interview_date = normalize(second_interview_date)
+    final_interview_date = normalize(final_interview_date)
+
+
+    first_period = first_period 
+    second_period = second_period 
+    final_period = final_period 
+
+    # フェーズ判定（重要：periodも含める）
+    if final_interview_date or final_period:
         last_updated_field = "最終面接"
 
-    elif second_interview_date:
+    elif second_interview_date or second_period:
         last_updated_field = "二次面接"
 
-    elif first_interview_date:
+    elif first_interview_date or first_period:
         last_updated_field = "一次面接"
 
     elif document_screening == "済":
@@ -497,6 +541,29 @@ def update_candidate(id):
 
     else:
         last_updated_field = "新規登録"
+
+
+
+    # フェーズを現在の状態から判定
+    # if final_interview_date:
+    #     last_updated_field = "最終面接"
+
+    # elif second_interview_date:
+    #     last_updated_field = "二次面接"
+
+    # elif first_interview_date:
+    #     last_updated_field = "一次面接"
+
+    # elif document_screening == "済":
+    #     last_updated_field = "書類選考"
+
+    # elif casual_event_staff:
+    #     last_updated_field = "カジュアル面談/説明会"
+
+    # else:
+    #     last_updated_field = "新規登録"
+
+    
 
     # candidatesテーブルを更新
     cursor.execute("""
