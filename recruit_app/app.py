@@ -563,7 +563,8 @@ def update_candidate(id):
     conn.commit()
     conn.close()
 
-    return redirect(url_for("detail_candidate", id=id))
+    return redirect(url_for("index"))
+    # return redirect(url_for("detail_candidate", id=id))
 
 
 # =========================
