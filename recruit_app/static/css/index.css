@@ -517,3 +517,28 @@ body {
   min-width: 160px;
   padding: 8px 10px;
 }
+
+
+.candidate-table td:nth-child(1),
+.candidate-table td:nth-child(2) {
+  white-space: nowrap;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.candidate-table td:last-child {
+  width: 140px;
+}
+
+.candidate-table td:nth-child(6) {
+  max-width: 280px;
+}
+
+.alert-list {
+  max-width: 260px;
+  word-break: break-word;
+}
