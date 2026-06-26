@@ -15,6 +15,7 @@ app = Flask(__name__)
 # =========================
 
 @app.route("/")
+@app.route("/")
 def index():
     search_name = request.args.get("name", "")
     search_owner = request.args.get("owner", "")
@@ -82,9 +83,7 @@ def index():
     for candidate in candidates:
         candidate_dict = dict(candidate)
 
-        # -------------------------------
-        # ✅ 空文字対策（重要）
-        # -------------------------------
+        # ✅ 空文字対策
         for key in [
             "first_interview_date",
             "second_interview_date",
@@ -99,20 +98,45 @@ def index():
                 candidate_dict[key] = None
 
         # =========================
-        # ✅ 次回選考日（完全修正版）
+        # ✅ 次回選考日（修正版）
         # =========================
-        next_selection_date = (
-            candidate_dict.get("first_interview_date")
-            or candidate_dict.get("second_interview_date")
-            or candidate_dict.get("final_interview_date")
-            or candidate_dict.get("first_period")
-            or candidate_dict.get("second_period")
-            or candidate_dict.get("final_period")
-            or candidate_dict.get("pizza_party_plan")
-            or candidate_dict.get("offer_deadline")
-        )
+        current_phase = candidate_dict.get("last_updated_field")
+
+        if current_phase == "一次面接":
+            next_selection_date = (
+                candidate_dict.get("second_interview_date")
+                or candidate_dict.get("second_period")
+                # fallback（ここ重要）
+                or candidate_dict.get("first_interview_date")
+                or candidate_dict.get("first_period")
+            )
+
+        elif current_phase == "二次面接":
+            next_selection_date = (
+                candidate_dict.get("final_interview_date")
+                or candidate_dict.get("final_period")
+                or candidate_dict.get("second_interview_date")
+                or candidate_dict.get("second_period")
+            )
+
+        elif current_phase in ["新規登録", "カジュアル面談/説明会", "書類選考"]:
+            next_selection_date = (
+                candidate_dict.get("first_interview_date")
+                or candidate_dict.get("first_period")
+            )
+
+        elif current_phase == "最終面接":
+            next_selection_date = (
+                candidate_dict.get("pizza_party_plan")
+                or candidate_dict.get("final_interview_date")
+                or candidate_dict.get("final_period")
+            )
+
+        else:
+            next_selection_date = None
 
         candidate_dict["next_selection_date"] = next_selection_date or "-"
+
 
         # =========================
         # アラート
@@ -124,7 +148,7 @@ def index():
 
         candidate_list.append(candidate_dict)
 
-    # ✅ アラート優先＋担当者＋名前順
+    # ✅ 並び替え
     candidate_list.sort(
         key=lambda x: (
             not x["has_alert"],
